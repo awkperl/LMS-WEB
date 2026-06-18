@@ -14,7 +14,7 @@ export const api = async (url, method = "GET", body, token) => {
 };**/
 //const API = "http://localhost:5000/api";
 const API = "https://lms-backend-yai8.onrender.com/api";
-const API = process.env.REACT_APP_API_URL;
+//const API = process.env.REACT_APP_API_URL;
 
 export const api = async (
   url,
