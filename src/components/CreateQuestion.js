@@ -22,8 +22,9 @@ export default function CreateQuestion({
         "POST",
         {
           quiz_id: quizId,
-          question_text: questionText,
+          question: questionText,
           correct_answer: answer
+          
         },
         token
       );
