@@ -27,7 +27,7 @@ export default function SubmitAssignment({
         formData.append("file", file);
 
         const uploadRes = await fetch(
-          "http://localhost:5000/api/upload",
+          "https://lms-backend-yai8.onrender.com/api/upload",
           {
             method: "POST",
             headers: {
