@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import CreateQuestion from "../components/CreateQuestion";
+import EditQuestion from "../components/EditQuestion";
 
 export default function QuizManagement({
   courseId,
@@ -10,9 +11,12 @@ export default function QuizManagement({
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [editingQuestion, setEditingQuestion] =
+  useState(null);
 
   const [title, setTitle] = useState("");
   const [timeLimit, setTimeLimit] = useState(30);
+  
 
   useEffect(() => {
 
@@ -219,59 +223,123 @@ export default function QuizManagement({
 
           ) : (
 
-            questions.map((q, index) => (
+          questions.map((q,index)=>(
 
-              <div
-                key={q.id}
-                style={{
-                  border: "1px solid #ddd",
-                  padding: 15,
-                  marginBottom: 10,
-                  borderRadius: 8,
-                  background: "#fff"
-                }}
-              >
+<div
+  key={q.id}
+  style={{
+    border:"1px solid #ddd",
+    borderRadius:10,
+    padding:20,
+    marginBottom:20,
+    background:"white"
+  }}
+>
 
-                <strong>
-                  {index + 1}. {q.question}
-                </strong>
+  <h4>
 
-                {q.options && (
+    Question {index+1}
 
-                  <ul style={{ marginTop: 10 }}>
+  </h4>
 
-                    {q.options.map((option, i) => (
+  <p>
 
-                      <li key={i}>
-                        {option}
-                      </li>
+    {q.question}
 
-                    ))}
+  </p>
 
-                  </ul>
+  {q.options && (
 
-                )}
+    <ul>
 
-                <p>
+      {q.options.map((option,i)=>(
 
-                  <strong>Correct Answer:</strong>{" "}
-                  {q.correct_answer}
+        <li key={i}>
 
-                </p>
+          {option}
 
-              </div>
+        </li>
 
-            ))
+      ))}
 
+    </ul>
+
+  )}
+
+  <p>
+
+    <b>
+
+      Correct Answer:
+
+    </b>
+
+    {" "}
+
+    {q.correct_answer}
+
+  </p>
+
+  <div
+    style={{
+      display:"flex",
+      gap:10,
+      marginTop:15
+    }}
+  >
+
+    <button
+
+      onClick={()=>
+        setEditingQuestion(q)
+      }
+
+      style={{
+        padding:"8px 16px",
+        border:"none",
+        borderRadius:6,
+        background:"#2563eb",
+        color:"white",
+        cursor:"pointer"
+      }}
+
+    >
+
+      ✏ Edit
+
+    </button>
+
+  </div>
+
+</div>
+
+))
           )}
 
-          <CreateQuestion
-            quizId={selectedQuiz.id}
-            token={token}
-            refresh={() =>
-              loadQuestions(selectedQuiz.id)
-            }
-          />
+          {editingQuestion ? (
+
+  <EditQuestion
+    questionData={editingQuestion}
+    token={token}
+    refresh={() =>
+      loadQuestions(selectedQuiz.id)
+    }
+    close={() =>
+      setEditingQuestion(null)
+    }
+  />
+
+) : (
+
+  <CreateQuestion
+    quizId={selectedQuiz.id}
+    token={token}
+    refresh={() =>
+      loadQuestions(selectedQuiz.id)
+    }
+  />
+
+)}
 
         </>
 
