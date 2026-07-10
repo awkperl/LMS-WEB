@@ -4,7 +4,8 @@ import SubmitAssignment from "../components/SubmitAssignment";
 import CreateAssignment from "../components/CreateAssignment";
 import AssignmentStatusBadge from "../components/AssignmentStatusBadge";
 import InstructorSubmissions from "../components/InstructorSubmissions";
-import QuizManagement from "./QuizManagement";
+import QuizManagement from "../components/QuizManagement";
+
 
 export default function Course({
   courseId,

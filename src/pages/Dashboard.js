@@ -9,7 +9,7 @@ import Certificates from "./Certificates";
 import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
 import Library from "./Library";
-import QuizManagement from "./QuizManagement";
+import QuizManagement from "../components/QuizManagement";
 
 export default function Dashboard({ token }) {
 

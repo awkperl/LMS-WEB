@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-import CreateQuestion from "./CreateQuestion";
+import CreateQuestion from "../components/CreateQuestion";
 
 export default function QuizManagement({
   courseId,
