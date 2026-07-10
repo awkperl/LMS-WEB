@@ -3,6 +3,7 @@ import { api } from "../services/api";
 import CreateQuestion from "../components/CreateQuestion";
 import EditQuestion from "../components/EditQuestion";
 import EditQuiz from "../components/EditQuiz";
+import QuizPreview from "../components/QuizPreview";
 
 export default function QuizManagement({
   courseId,
@@ -16,6 +17,8 @@ export default function QuizManagement({
   useState(null);
   const [editingQuiz, setEditingQuiz] =
   useState(null);
+  const [previewQuiz, setPreviewQuiz] =
+useState(null);
 
   const [title, setTitle] = useState("");
   const [timeLimit, setTimeLimit] = useState(30);
@@ -316,6 +319,21 @@ loadQuestions(quiz.id);
 Open Quiz
 
 </button>
+<button
+
+onClick={()=>{
+
+  await loadQuestions(quiz.id);
+
+  setPreviewQuiz(quiz);
+
+}}
+
+>
+
+👁 Preview
+
+</button>
 
 <button
 
@@ -377,6 +395,21 @@ cursor:"pointer"
 
     close={() =>
       setEditingQuiz(null)
+    }
+
+  />
+
+)}
+{previewQuiz && (
+
+  <QuizPreview
+
+    quiz={previewQuiz}
+
+    questions={questions}
+
+    close={() =>
+      setPreviewQuiz(null)
     }
 
   />
