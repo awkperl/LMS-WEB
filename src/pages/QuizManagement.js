@@ -295,12 +295,12 @@ useState(null);
 
             <br />
             <br />
-
-           <div
+<div
   style={{
     display:"flex",
     gap:10,
-    marginTop:10
+    marginTop:10,
+    flexWrap:"wrap"
   }}
 >
 
@@ -316,13 +316,14 @@ loadQuestions(quiz.id);
 
 >
 
-Open Quiz
+Open
 
 </button>
+
 <button
 
 onClick={()=>{
-
+  
   await loadQuestions(quiz.id);
 
   setPreviewQuiz(quiz);
@@ -337,9 +338,7 @@ onClick={()=>{
 
 <button
 
-onClick={()=>
-setEditingQuiz(quiz)
-}
+onClick={()=>setEditingQuiz(quiz)}
 
 >
 
@@ -349,9 +348,7 @@ setEditingQuiz(quiz)
 
 <button
 
-onClick={()=>
-deleteQuiz(quiz.id)
-}
+onClick={()=>deleteQuiz(quiz.id)}
 
 style={{
 
@@ -363,9 +360,7 @@ border:"none",
 
 padding:"8px 16px",
 
-borderRadius:6,
-
-cursor:"pointer"
+borderRadius:6
 
 }}
 
