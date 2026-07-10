@@ -72,6 +72,42 @@ export default function QuizManagement({
 
   };
 
+  const deleteQuestion = async (id) => {
+
+  const confirmDelete = window.confirm(
+    "Delete this question?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    await api(
+
+      `/quizzes/question/${id}`,
+
+      "DELETE",
+
+      null,
+
+      token
+
+    );
+
+    alert("Question deleted.");
+
+    loadQuestions(selectedQuiz.id);
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(err.message);
+
+  }
+
+};
+
   const createQuiz = async () => {
 
     if (!title.trim()) {
@@ -288,26 +324,57 @@ export default function QuizManagement({
     }}
   >
 
-    <button
+   <div
+  style={{
+    display: "flex",
+    gap: 10,
+    marginTop: 15
+  }}
+>
 
-      onClick={()=>
-        setEditingQuestion(q)
-      }
+  <button
 
-      style={{
-        padding:"8px 16px",
-        border:"none",
-        borderRadius:6,
-        background:"#2563eb",
-        color:"white",
-        cursor:"pointer"
-      }}
+    onClick={() =>
+      setEditingQuestion(q)
+    }
 
-    >
+    style={{
+      padding: "8px 16px",
+      border: "none",
+      borderRadius: 6,
+      background: "#2563eb",
+      color: "white",
+      cursor: "pointer"
+    }}
 
-      ✏ Edit
+  >
 
-    </button>
+    ✏ Edit
+
+  </button>
+
+  <button
+
+    onClick={() =>
+      deleteQuestion(q.id)
+    }
+
+    style={{
+      padding: "8px 16px",
+      border: "none",
+      borderRadius: 6,
+      background: "#dc2626",
+      color: "white",
+      cursor: "pointer"
+    }}
+
+  >
+
+    🗑 Delete
+
+  </button>
+
+</div>
 
   </div>
 
