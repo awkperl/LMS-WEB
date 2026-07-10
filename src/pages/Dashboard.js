@@ -50,6 +50,7 @@ import Certificates from "./Certificates";
 import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
 import Library from "./Library";
+import QuizManagement from "./QuizManagement";
 
 export default function Dashboard({ token }) {
 
@@ -207,6 +208,17 @@ export default function Dashboard({ token }) {
     )}
   >
     🌍 Browse Courses
+  </div>
+
+)}
+
+{["admin", "instructor"].includes(user?.role) && (
+
+  <div
+    onClick={() => setPage("quiz-management")}
+    style={menuStyle(page === "quiz-management")}
+  >
+    📝 Quiz Management
   </div>
 
 )}
@@ -528,6 +540,7 @@ export default function Dashboard({ token }) {
 
 )}
 
+
         {/* NOTIFICATIONS */}
         {page ===
           "notifications" && (
@@ -537,6 +550,14 @@ export default function Dashboard({ token }) {
           />
 
         )}
+
+        {page === "quiz-management" && (
+
+  <QuizManagement
+    token={token}
+  />
+
+)}
 
         {/* EXAMS */}
         {page === "exams" && (
