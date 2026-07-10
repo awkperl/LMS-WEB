@@ -3,6 +3,7 @@ import { api } from "../services/api";
 import CreateQuestion from "../components/CreateQuestion";
 import EditQuestion from "../components/EditQuestion";
 import EditQuiz from "../components/EditQuiz";
+import QuizPreview from "../components/QuizPreview";
 
 export default function QuizManagement({
   courseId,
@@ -16,6 +17,8 @@ export default function QuizManagement({
   useState(null);
   const [editingQuiz, setEditingQuiz] =
   useState(null);
+  const [previewQuiz, setPreviewQuiz] =
+useState(null);
 
   const [title, setTitle] = useState("");
   const [timeLimit, setTimeLimit] = useState(30);
@@ -293,11 +296,12 @@ export default function QuizManagement({
             <br />
             <br />
 
-           <div
+<div
   style={{
     display:"flex",
     gap:10,
-    marginTop:10
+    marginTop:10,
+    flexWrap:"wrap"
   }}
 >
 
@@ -313,15 +317,29 @@ loadQuestions(quiz.id);
 
 >
 
-Open Quiz
+Open
 
 </button>
 
 <button
 
-onClick={()=>
-setEditingQuiz(quiz)
-}
+onClick={()=>{
+
+setPreviewQuiz(quiz);
+
+loadQuestions(quiz.id);
+
+}}
+
+>
+
+👁 Preview
+
+</button>
+
+<button
+
+onClick={()=>setEditingQuiz(quiz)}
 
 >
 
@@ -331,9 +349,7 @@ setEditingQuiz(quiz)
 
 <button
 
-onClick={()=>
-deleteQuiz(quiz.id)
-}
+onClick={()=>deleteQuiz(quiz.id)}
 
 style={{
 
@@ -345,9 +361,7 @@ border:"none",
 
 padding:"8px 16px",
 
-borderRadius:6,
-
-cursor:"pointer"
+borderRadius:6
 
 }}
 
@@ -358,8 +372,7 @@ cursor:"pointer"
 </button>
 
 </div>
-
-          </div>
+</div>
 
         ))
 
@@ -513,6 +526,21 @@ cursor:"pointer"
     🗑 Delete
 
   </button>
+  {previewQuiz && (
+
+<QuizPreview
+
+quiz={previewQuiz}
+
+questions={questions}
+
+close={()=>
+setPreviewQuiz(null)
+}
+
+/>
+
+)}
 
 </div>
 
