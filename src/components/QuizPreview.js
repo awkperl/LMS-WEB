@@ -134,22 +134,23 @@ export default function QuizPreview({
 
                 <ul>
 
-                  {
+  {Array.isArray(q.options) ? (
 
-                    q.options.map((option,i)=>(
+    q.options.map((option, i) => (
 
-                      <li key={i}>
+      <li key={i}>
+        {option}
+      </li>
 
-                        {option}
+    ))
 
-                      </li>
+  ) : (
 
-                    ))
+    <li>No options available.</li>
 
-                  }
+  )}
 
-                </ul>
-
+</ul>
                 <div
                   style={{
                     marginTop:15,
