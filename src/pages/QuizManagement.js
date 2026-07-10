@@ -1,4 +1,4 @@
-/**import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import CreateQuestion from "./CreateQuestion";
 
@@ -352,9 +352,9 @@ export default function QuizManagement({
 
   );
 
-}**/
+}
 
-import { useEffect, useState } from "react";
+/**import { useEffect, useState } from "react";
 import { api } from "../services/api";
 
 import CreateQuiz from "../components/CreateQuiz";
@@ -543,4 +543,4 @@ export default function QuizManagement({ token }) {
 
   );
 
-}
+}**/
