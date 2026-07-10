@@ -53,6 +53,65 @@ export default function QuizManagement({
     }
 
   };
+  const deleteQuiz = async (id) => {
+
+  const confirmDelete = window.confirm(
+
+    "Delete this quiz and all its questions?"
+
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    await api(
+
+      `/quizzes/${id}`,
+
+      "DELETE",
+
+      null,
+
+      token
+
+    );
+
+    alert("Quiz deleted successfully.");
+
+    if (
+
+      selectedQuiz &&
+
+      selectedQuiz.id === id
+
+    ) {
+
+      setSelectedQuiz(null);
+
+      setQuestions([]);
+
+    }
+
+    loadQuizzes();
+
+  }
+
+  catch (err) {
+
+    console.error(err);
+
+    alert(
+
+      err.message ||
+
+      "Unable to delete quiz."
+
+    );
+
+  }
+
+};
 
   const loadQuestions = async (quizId) => {
 
@@ -260,11 +319,41 @@ Open Quiz
 
 <button
 
-onClick={()=>setEditingQuiz(quiz)}
+onClick={()=>
+setEditingQuiz(quiz)
+}
 
 >
 
 ✏ Edit
+
+</button>
+
+<button
+
+onClick={()=>
+deleteQuiz(quiz.id)
+}
+
+style={{
+
+background:"#dc2626",
+
+color:"white",
+
+border:"none",
+
+padding:"8px 16px",
+
+borderRadius:6,
+
+cursor:"pointer"
+
+}}
+
+>
+
+🗑 Delete
 
 </button>
 
