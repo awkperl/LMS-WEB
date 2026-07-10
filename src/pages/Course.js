@@ -4,6 +4,7 @@ import SubmitAssignment from "../components/SubmitAssignment";
 import CreateAssignment from "../components/CreateAssignment";
 import AssignmentStatusBadge from "../components/AssignmentStatusBadge";
 import InstructorSubmissions from "../components/InstructorSubmissions";
+import QuizManagement from "./QuizManagement";
 
 export default function Course({
   courseId,
@@ -14,6 +15,7 @@ export default function Course({
   const [assignments, setAssignments] = useState([]);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [submissions, setSubmissions] = useState([]);
+  const [tab, setTab] = useState("assignments");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -128,18 +130,18 @@ export default function Course({
             ⬅ Back
           </button>
 
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 28
-            }}
-          >
-            Course Assignments
-          </h1>
+       <h1
+  style={{
+    margin: 0,
+    fontSize: 28
+  }}
+>
+  Course Workspace
+</h1>
 
-          <p style={{ color: "gray" }}>
-            View and submit course assignments
-          </p>
+<p style={{ color: "gray" }}>
+  Manage assignments, quizzes and course activities.
+</p>
 
         </div>
 
@@ -165,6 +167,61 @@ export default function Course({
         </div>
 
       </div>
+
+      <div
+  style={{
+    display: "flex",
+    gap: 10,
+    marginBottom: 25
+  }}
+>
+
+  <button
+    onClick={() => setTab("assignments")}
+    style={{
+      padding: "10px 20px",
+      border: "none",
+      borderRadius: 8,
+      cursor: "pointer",
+      background:
+        tab === "assignments"
+          ? "#111827"
+          : "#e5e7eb",
+      color:
+        tab === "assignments"
+          ? "white"
+          : "#111827"
+    }}
+  >
+    📚 Assignments
+  </button>
+
+  <button
+    onClick={() => setTab("quizzes")}
+    style={{
+      padding: "10px 20px",
+      border: "none",
+      borderRadius: 8,
+      cursor: "pointer",
+      background:
+        tab === "quizzes"
+          ? "#111827"
+          : "#e5e7eb",
+      color:
+        tab === "quizzes"
+          ? "white"
+          : "#111827"
+    }}
+  >
+    📝 Quizzes
+  </button>
+
+</div>
+
+{tab === "assignments" && (
+
+<>
+
 
       {/* CREATE ASSIGNMENT */}
       {["instructor", "admin"].includes(
@@ -447,7 +504,17 @@ export default function Course({
         />
 
       )}
+</>
 
+)}
+{tab === "quizzes" && (
+
+  <QuizManagement
+    courseId={courseId}
+    token={token}
+  />
+
+)}
     </div>
 
   );
