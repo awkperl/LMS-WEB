@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import CreateQuestion from "../components/CreateQuestion";
 import EditQuestion from "../components/EditQuestion";
+import EditQuiz from "../components/EditQuiz";
 
 export default function QuizManagement({
   courseId,
@@ -12,6 +13,8 @@ export default function QuizManagement({
   const [selectedQuiz, setSelectedQuiz] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [editingQuestion, setEditingQuestion] =
+  useState(null);
+  const [editingQuiz, setEditingQuiz] =
   useState(null);
 
   const [title, setTitle] = useState("");
@@ -231,23 +234,65 @@ export default function QuizManagement({
             <br />
             <br />
 
-            <button
-              onClick={() => {
+           <div
+  style={{
+    display:"flex",
+    gap:10,
+    marginTop:10
+  }}
+>
 
-                setSelectedQuiz(quiz);
+<button
 
-                loadQuestions(quiz.id);
+onClick={()=>{
 
-              }}
-            >
-              Open Quiz
-            </button>
+setSelectedQuiz(quiz);
+
+loadQuestions(quiz.id);
+
+}}
+
+>
+
+Open Quiz
+
+</button>
+
+<button
+
+onClick={()=>setEditingQuiz(quiz)}
+
+>
+
+✏ Edit
+
+</button>
+
+</div>
 
           </div>
 
         ))
 
       )}
+
+{editingQuiz && (
+
+  <EditQuiz
+
+    quiz={editingQuiz}
+
+    token={token}
+
+    refresh={loadQuizzes}
+
+    close={() =>
+      setEditingQuiz(null)
+    }
+
+  />
+
+)}
 
       {selectedQuiz && (
 
