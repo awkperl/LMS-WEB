@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+/**import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import CreateQuestion from "./CreateQuestion";
 
@@ -347,6 +347,197 @@ export default function QuizManagement({
         )
 
       }
+
+    </div>
+
+  );
+
+}**/
+
+import { useEffect, useState } from "react";
+import { api } from "../services/api";
+
+import CreateQuiz from "../components/CreateQuiz";
+import CreateQuestion from "../components/CreateQuestion";
+
+export default function QuizManagement({ token }) {
+
+  const [quizzes, setQuizzes] = useState([]);
+  const [selectedQuiz, setSelectedQuiz] = useState(null);
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    loadQuizzes();
+  }, []);
+
+  const loadQuizzes = async () => {
+
+    try {
+
+      const data = await api(
+        "/quizzes",
+        "GET",
+        null,
+        token
+      );
+
+      setQuizzes(data);
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  };
+
+  const loadQuestions = async (quizId) => {
+
+    try {
+
+      const data = await api(
+        `/quizzes/${quizId}/questions`,
+        "GET",
+        null,
+        token
+      );
+
+      setQuestions(data);
+
+    } catch (err) {
+
+      console.error(err);
+
+    }
+
+  };
+
+  const selectQuiz = (quiz) => {
+
+    setSelectedQuiz(quiz);
+
+    loadQuestions(quiz.id);
+
+  };
+
+  return (
+
+    <div>
+
+      <h2>Quiz Management</h2>
+
+      <CreateQuiz
+        token={token}
+        refresh={loadQuizzes}
+      />
+
+      <hr />
+
+      <h3>Available Quizzes</h3>
+
+      {quizzes.map((quiz) => (
+
+        <div
+          key={quiz.id}
+          style={{
+            padding:15,
+            marginBottom:10,
+            border:"1px solid #ddd",
+            borderRadius:8,
+            cursor:"pointer"
+          }}
+          onClick={() => selectQuiz(quiz)}
+        >
+
+          <strong>{quiz.title}</strong>
+
+          <br/>
+
+          Time Limit: {quiz.time_limit} minutes
+
+        </div>
+
+      ))}
+
+      {selectedQuiz && (
+
+        <>
+
+          <hr />
+
+          <h3>
+
+            Questions for:
+
+            {" "}
+
+            {selectedQuiz.title}
+
+          </h3>
+
+          <CreateQuestion
+            quizId={selectedQuiz.id}
+            token={token}
+            refresh={() =>
+              loadQuestions(selectedQuiz.id)
+            }
+          />
+
+          <div style={{marginTop:30}}>
+
+            {questions.map((q,index)=>(
+
+              <div
+                key={q.id}
+                style={{
+                  background:"#fff",
+                  padding:15,
+                  borderRadius:8,
+                  marginBottom:10
+                }}
+              >
+
+                <strong>
+
+                  Q{index+1}
+
+                </strong>
+
+                <p>{q.question}</p>
+
+                {q.options && (
+
+                  <ul>
+
+                    {q.options.map((opt,i)=>(
+
+                      <li key={i}>{opt}</li>
+
+                    ))}
+
+                  </ul>
+
+                )}
+
+                <b>
+
+                  Correct:
+
+                </b>
+
+                {" "}
+
+                {q.correct_answer}
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </>
+
+      )}
 
     </div>
 
