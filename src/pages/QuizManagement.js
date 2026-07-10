@@ -321,19 +321,15 @@ Open
 </button>
 
 <button
+  onClick={async () => {
 
-onClick={()=>{
-  
-  await loadQuestions(quiz.id);
+    await loadQuestions(quiz.id);
 
-  setPreviewQuiz(quiz);
+    setPreviewQuiz(quiz);
 
-}}
-
+  }}
 >
-
-👁 Preview
-
+  👁 Preview
 </button>
 
 <button
