@@ -5,6 +5,7 @@ import CreateAssignment from "../components/CreateAssignment";
 import AssignmentStatusBadge from "../components/AssignmentStatusBadge";
 import InstructorSubmissions from "../components/InstructorSubmissions";
 import QuizManagement from "./QuizManagement";
+import StudentQuizList from "../components/StudentQuizList";
 
 
 export default function Course({
@@ -510,10 +511,21 @@ export default function Course({
 )}
 {tab === "quizzes" && (
 
-  <QuizManagement
-    courseId={courseId}
-    token={token}
-  />
+  ["admin", "instructor"].includes(user?.role) ? (
+
+    <QuizManagement
+      courseId={courseId}
+      token={token}
+    />
+
+  ) : (
+
+    <StudentQuizList
+      courseId={courseId}
+      token={token}
+    />
+
+  )
 
 )}
     </div>
