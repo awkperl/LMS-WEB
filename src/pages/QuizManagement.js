@@ -102,7 +102,13 @@ export default function QuizManagement({
 
     console.error(err);
 
-    alert(err.message);
+  alert(
+
+    err.message ||
+
+    "Unable to delete question."
+
+  );
 
   }
 
