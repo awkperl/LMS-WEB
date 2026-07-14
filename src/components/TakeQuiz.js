@@ -24,15 +24,6 @@ export default function TakeQuiz({
     const [questions, setQuestions] =
         useState([]);
 
-    const [currentQuestion, setCurrentQuestion] =
-        useState(0);
-
-    const [answers, setAnswers] =
-        useState({});
-
-    const [timeLeft, setTimeLeft] =
-        useState(0);
-
     useEffect(() => {
 
         startQuiz();
@@ -79,12 +70,6 @@ export default function TakeQuiz({
 
             );
 
-            setTimeLeft(
-
-                response.quiz.time_limit * 60
-
-            );
-
         }
 
         catch (err) {
@@ -109,31 +94,11 @@ export default function TakeQuiz({
 
     };
 
-    useEffect(() => {
-
-        if (timeLeft <= 0) return;
-
-        const timer = setInterval(() => {
-
-            setTimeLeft(prev => prev - 1);
-
-        }, 1000);
-
-        return () => clearInterval(timer);
-
-    }, [timeLeft]);
-
-    const minutes = Math.floor(timeLeft / 60);
-
-    const seconds = timeLeft % 60;
-
-    const question = questions[currentQuestion];
-
     if (loading) {
 
         return (
 
-            <div style={{ padding: 40 }}>
+            <div style={{ padding:40 }}>
 
                 <h2>
 
@@ -151,7 +116,7 @@ export default function TakeQuiz({
 
         return (
 
-            <div style={{ padding: 40 }}>
+            <div style={{ padding:40 }}>
 
                 <h2>
 
@@ -175,31 +140,11 @@ export default function TakeQuiz({
 
     }
 
-    if (!question) {
-
-        return (
-
-            <div style={{ padding: 40 }}>
-
-                <h2>No questions available.</h2>
-
-                <button onClick={goBack}>
-
-                    Back
-
-                </button>
-
-            </div>
-
-        );
-
-    }
-
     return (
 
         <div
             style={{
-                padding: 40
+                padding:40
             }}
         >
 
@@ -231,173 +176,31 @@ export default function TakeQuiz({
 
             <hr />
 
-            <div
-                style={{
-                    background: "#f9fafb",
-                    padding: 20,
-                    borderRadius: 10,
-                    marginTop: 20
-                }}
-            >
-
-                <h2>
-
-                    Time Remaining
-
-                </h2>
-
-                <h1
-                    style={{
-                        color: "#dc2626"
-                    }}
-                >
-
-                    {minutes}:
-
-                    {seconds
-                        .toString()
-                        .padStart(2, "0")}
-
-                </h1>
-
-            </div>
-
-            <hr />
-
             <h2>
 
-                Question
+                Quiz Ready
+
+            </h2>
+
+            <p>
+
+                Attempt ID:
 
                 {" "}
 
-                {currentQuestion + 1}
+                {attempt.id}
 
-                {" "}
+            </p>
 
-                of
+            <p>
+
+                Questions Loaded:
 
                 {" "}
 
                 {questions.length}
 
-            </h2>
-
-            <h3>
-
-                {question.question}
-
-            </h3>
-
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 15,
-                    marginTop: 20
-                }}
-            >
-
-                {
-
-                    question.options.map(option => (
-
-                        <label
-                            key={option}
-                        >
-
-                            <input
-
-                                type="radio"
-
-                                name="answer"
-
-                                checked={
-
-                                    answers[question.id] === option
-
-                                }
-
-                                onChange={() =>
-
-                                    setAnswers({
-
-                                        ...answers,
-
-                                        [question.id]: option
-
-                                    })
-
-                                }
-
-                            />
-
-                            {" "}
-
-                            {option}
-
-                        </label>
-
-                    ))
-
-                }
-
-            </div>
-
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: 40
-                }}
-            >
-
-                <button
-
-                    disabled={currentQuestion === 0}
-
-                    onClick={() =>
-
-                        setCurrentQuestion(
-
-                            currentQuestion - 1
-
-                        )
-
-                    }
-
-                >
-
-                    ◀ Previous
-
-                </button>
-
-                <button
-
-                    disabled={
-
-                        currentQuestion ===
-
-                        questions.length - 1
-
-                    }
-
-                    onClick={() =>
-
-                        setCurrentQuestion(
-
-                            currentQuestion + 1
-
-                        )
-
-                    }
-
-                >
-
-                    Next ▶
-
-                </button>
-
-            </div>
+            </p>
 
         </div>
 
