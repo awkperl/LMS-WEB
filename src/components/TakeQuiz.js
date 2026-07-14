@@ -268,7 +268,7 @@ const question = questions[currentQuestion];
 
 {
 
-question.options.map(option => (
+(Array.isArray(question.options) ? question.options : []).map(option => (
 
 <label
     key={option}
