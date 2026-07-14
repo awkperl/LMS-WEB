@@ -199,31 +199,117 @@ const question = questions[currentQuestion];
 
             <hr />
 
-            <h2>
+            <div
+    style={{
+        background: "#f9fafb",
+        padding: 20,
+        borderRadius: 10,
+        marginTop: 20
+    }}
+>
 
-                Quiz Ready
+    <h2>
 
-            </h2>
+        Time Remaining
 
-            <p>
+    </h2>
 
-                Attempt ID:
+    <h1
+        style={{
+            color: "#dc2626"
+        }}
+    >
 
-                {" "}
+        {minutes}:
 
-                {attempt.id}
+        {seconds
+            .toString()
+            .padStart(2, "0")}
 
-            </p>
+    </h1>
 
-            <p>
+</div>
 
-                Questions Loaded:
+<hr />
 
-                {" "}
+<h2>
 
-                {questions.length}
+    Question
 
-            </p>
+    {" "}
+
+    {currentQuestion + 1}
+
+    {" "}
+
+    of
+
+    {" "}
+
+    {questions.length}
+
+</h2>
+
+<h3>
+
+    {question.question}
+
+</h3>
+
+<div
+    style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 15,
+        marginTop: 20
+    }}
+>
+
+{
+
+question.options.map(option => (
+
+<label
+    key={option}
+>
+
+<input
+
+type="radio"
+
+name="answer"
+
+checked={
+
+answers[question.id] === option
+
+}
+
+onChange={() =>
+
+setAnswers({
+
+...answers,
+
+[question.id]: option
+
+})
+
+}
+
+/>
+
+{" "}
+
+{option}
+
+</label>
+
+))
+
+}
+
+</div>
 
         </div>
 
