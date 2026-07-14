@@ -23,6 +23,11 @@ export default function TakeQuiz({
 
     const [questions, setQuestions] =
         useState([]);
+        const [currentQuestion, setCurrentQuestion] = useState(0);
+
+const [answers, setAnswers] = useState({});
+
+const [timeLeft, setTimeLeft] = useState(0);
 
     useEffect(() => {
 
@@ -69,6 +74,7 @@ export default function TakeQuiz({
                 response.questions || []
 
             );
+            setTimeLeft(response.quiz.time_limit * 60);
 
         }
 
@@ -93,6 +99,23 @@ export default function TakeQuiz({
         }
 
     };
+    useEffect(() => {
+
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+
+        setTimeLeft(prev => prev - 1);
+
+    }, 1000);
+
+    return () => clearInterval(timer);
+
+}, [timeLeft]);
+const minutes = Math.floor(timeLeft / 60);
+
+const seconds = timeLeft % 60;
+const question = questions[currentQuestion];
 
     if (loading) {
 
