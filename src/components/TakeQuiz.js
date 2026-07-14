@@ -74,6 +74,7 @@ const [timeLeft, setTimeLeft] = useState(0);
                 response.questions || []
 
             );
+            console.log(response.questions);
             setTimeLeft(response.quiz.time_limit * 60);
 
         }
