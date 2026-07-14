@@ -266,14 +266,13 @@ const question = questions[currentQuestion];
     }}
 >
 
-{Array.isArray(question.options)
-    ? question.options.map(option => (
+{Array.isArray(question.options) && question.options.length > 0 ? (
 
+    question.options.map(option => (
         <label key={option}>
-
             <input
                 type="radio"
-                name="answer"
+                name={`answer-${question.id}`}
                 checked={answers[question.id] === option}
                 onChange={() =>
                     setAnswers({
@@ -282,18 +281,25 @@ const question = questions[currentQuestion];
                     })
                 }
             />
-
             {option}
-
         </label>
-
     ))
-    : (
-        <p style={{color:"red"}}>
-            This question has no options.
-        </p>
-    )
-}
+
+) : (
+
+    <input
+        type="text"
+        placeholder="Type your answer..."
+        value={answers[question.id] || ""}
+        onChange={(e) =>
+            setAnswers({
+                ...answers,
+                [question.id]: e.target.value
+            })
+        }
+    />
+
+)}
 
 </div>
 
