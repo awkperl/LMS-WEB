@@ -35,18 +35,13 @@ export default function TakeQuiz({
 
         try {
 
-            setLoading(true);
-
             const response = await api(
 
                 "/quizzes/start",
-
                 "POST",
-
                 {
                     quiz_id: quiz.id
                 },
-
                 token
 
             );
@@ -55,7 +50,7 @@ export default function TakeQuiz({
 
             setQuizData(response.quiz);
 
-            setQuestions(response.questions || []);
+            setQuestions(response.questions);
 
             setTimeLeft(response.quiz.time_limit * 60);
 
@@ -65,13 +60,7 @@ export default function TakeQuiz({
 
             console.error(err);
 
-            setError(
-
-                err.message ||
-
-                "Unable to start quiz."
-
-            );
+            setError(err.message);
 
         }
 
@@ -83,11 +72,19 @@ export default function TakeQuiz({
 
     };
 
-    /* TIMER */
-
     useEffect(() => {
 
-        if (timeLeft <= 0) return;
+        if (timeLeft <= 0) {
+
+            if (attempt) {
+
+                submitQuiz();
+
+            }
+
+            return;
+
+        }
 
         const timer = setInterval(() => {
 
@@ -99,41 +96,103 @@ export default function TakeQuiz({
 
     }, [timeLeft]);
 
+    const saveAnswer = async (questionId, answer) => {
+
+        if (!attempt) return;
+
+        try {
+
+            await api(
+
+                "/quizzes/answer",
+
+                "POST",
+
+                {
+
+                    attempt_id: attempt.id,
+
+                    question_id: questionId,
+
+                    answer
+
+                },
+
+                token
+
+            );
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
+
+    const handleAnswer = (questionId, value) => {
+
+        setAnswers(prev => ({
+
+            ...prev,
+
+            [questionId]: value
+
+        }));
+
+        saveAnswer(questionId, value);
+
+    };
+
+    const submitQuiz = async () => {
+
+        try {
+
+            const result = await api(
+
+                "/quizzes/submit",
+
+                "POST",
+
+                {
+
+                    attempt_id: attempt.id
+
+                },
+
+                token
+
+            );
+
+            alert(
+
+                `Quiz Submitted\n\nScore: ${result.score}/${result.totalQuestions}\nPercentage: ${result.percentage}%`
+
+            );
+
+            goBack();
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
+
     if (loading) {
 
-        return (
-
-            <div style={{ padding: 40 }}>
-
-                <h2>
-
-                    Starting Quiz...
-
-                </h2>
-
-            </div>
-
-        );
+        return <h2>Starting Quiz...</h2>;
 
     }
 
     if (error) {
 
-        return (
-
-            <div style={{ padding: 40 }}>
-
-                <h2>{error}</h2>
-
-                <button onClick={goBack}>
-
-                    Back
-
-                </button>
-
-            </div>
-
-        );
+        return <h2>{error}</h2>;
 
     }
 
@@ -141,11 +200,11 @@ export default function TakeQuiz({
 
     const minutes = Math.floor(timeLeft / 60);
 
-    const seconds = timeLeft % 60;
+    const seconds = String(timeLeft % 60).padStart(2, "0");
 
     return (
 
-        <div style={{ padding: 40 }}>
+        <div style={{ padding:40 }}>
 
             <button onClick={goBack}>
 
@@ -165,115 +224,89 @@ export default function TakeQuiz({
 
             </p>
 
-            <hr />
-
-            {/* TIMER */}
+            <hr/>
 
             <div
 
                 style={{
 
-                    background: "#f9fafb",
+                    background:"#f9fafb",
 
-                    padding: 20,
+                    padding:20,
 
-                    borderRadius: 10,
+                    borderRadius:10,
 
-                    marginBottom: 30
+                    marginBottom:30
 
                 }}
 
             >
 
-                <h2>
+                <h2>Time Remaining</h2>
 
-                    Time Remaining
+                <h1 style={{color:"#dc2626"}}>
 
-                </h2>
-
-                <h1
-
-                    style={{
-
-                        color: "#dc2626"
-
-                    }}
-
-                >
-
-                    {minutes}:
-
-                    {seconds
-
-                        .toString()
-
-                        .padStart(2, "0")}
+                    {minutes}:{seconds}
 
                 </h1>
 
             </div>
 
-            {/* QUESTION PALETTE */}
-
             <div
 
                 style={{
 
-                    display: "flex",
+                    display:"flex",
 
-                    flexWrap: "wrap",
+                    gap:10,
 
-                    gap: 10,
+                    flexWrap:"wrap",
 
-                    marginBottom: 30
+                    marginBottom:25
 
                 }}
 
             >
 
-                {questions.map((q, index) => (
+                {questions.map((q,index)=>(
 
                     <button
 
                         key={q.id}
 
-                        onClick={() =>
-                            setCurrentQuestion(index)
-                        }
+                        onClick={()=>setCurrentQuestion(index)}
 
                         style={{
 
-                            width: 45,
+                            width:45,
 
-                            height: 45,
+                            height:45,
 
-                            borderRadius: "50%",
+                            borderRadius:"50%",
 
-                            border: "none",
+                            border:"none",
 
-                            cursor: "pointer",
-
-                            fontWeight: "bold",
+                            cursor:"pointer",
 
                             background:
 
-                                currentQuestion === index
+                                answers[q.id]
 
-                                    ? "#2563eb"
+                                ? "#16a34a"
 
-                                    : answers[q.id]
+                                : index===currentQuestion
 
-                                    ? "#16a34a"
+                                ? "#2563eb"
 
-                                    : "#d1d5db",
+                                : "#d1d5db",
 
-                            color: "white"
+                            color:"white"
 
                         }}
 
                     >
 
-                        {index + 1}
+                        {index+1}
 
                     </button>
 
@@ -281,11 +314,9 @@ export default function TakeQuiz({
 
             </div>
 
-            <hr />
-
             <h2>
 
-                Question {currentQuestion + 1} of {questions.length}
+                Question {currentQuestion+1} of {questions.length}
 
             </h2>
 
@@ -299,175 +330,67 @@ export default function TakeQuiz({
 
                 style={{
 
-                    marginTop: 25
+                    marginTop:20,
+
+                    display:"flex",
+
+                    flexDirection:"column",
+
+                    gap:12
 
                 }}
 
             >
 
-                {/* MULTIPLE CHOICE */}
+                {Array.isArray(question.options)
 
-                {question.type === "multiple_choice" &&
+                && question.options.length>0 ? (
 
-                    Array.isArray(question.options) && (
+                    question.options.map(option=>(
 
-                        question.options.map(option => (
+                        <label key={option}>
 
-                            <label
+                            <input
 
-                                key={option}
+                                type="radio"
 
-                                style={{
+                                checked={
 
-                                    display: "block",
+                                    answers[question.id]===option
 
-                                    marginBottom: 12
+                                }
 
-                                }}
+                                onChange={()=>
 
-                            >
+                                    handleAnswer(
 
-                                <input
+                                        question.id,
 
-                                    type="radio"
+                                        option
 
-                                    checked={
+                                    )
 
-                                        answers[question.id] === option
+                                }
 
-                                    }
+                            />
 
-                                    onChange={() =>
+                            {" "}
 
-                                        setAnswers({
+                            {option}
 
-                                            ...answers,
+                        </label>
 
-                                            [question.id]: option
+                    ))
 
-                                        })
+                )
 
-                                    }
+                :
 
-                                />
-
-                                {" "}
-
-                                {option}
-
-                            </label>
-
-                        ))
-
-                    )}
-
-                {/* TRUE FALSE */}
-
-                {question.type === "true_false" && (
-
-                    <>
-
-                        {["True", "False"].map(option => (
-
-                            <label
-
-                                key={option}
-
-                                style={{
-
-                                    display: "block",
-
-                                    marginBottom: 12
-
-                                }}
-
-                            >
-
-                                <input
-
-                                    type="radio"
-
-                                    checked={
-
-                                        answers[question.id] === option
-
-                                    }
-
-                                    onChange={() =>
-
-                                        setAnswers({
-
-                                            ...answers,
-
-                                            [question.id]: option
-
-                                        })
-
-                                    }
-
-                                />
-
-                                {" "}
-
-                                {option}
-
-                            </label>
-
-                        ))}
-
-                    </>
-
-                )}
-
-                {/* SHORT ANSWER */}
-
-                {question.type === "short_answer" && (
-
-                    <input
-
-                        type="text"
-
-                        value={
-
-                            answers[question.id] || ""
-
-                        }
-
-                        onChange={(e) =>
-
-                            setAnswers({
-
-                                ...answers,
-
-                                [question.id]:
-
-                                    e.target.value
-
-                            })
-
-                        }
-
-                        placeholder="Type your answer..."
-
-                        style={{
-
-                            width: "100%",
-
-                            padding: 12
-
-                        }}
-
-                    />
-
-                )}
-
-                {/* ESSAY */}
-
-                {question.type === "essay" && (
+                (
 
                     <textarea
 
-                        rows={8}
+                        rows={4}
 
                         value={
 
@@ -475,27 +398,23 @@ export default function TakeQuiz({
 
                         }
 
-                        onChange={(e) =>
+                        onChange={(e)=>
 
-                            setAnswers({
+                            handleAnswer(
 
-                                ...answers,
+                                question.id,
 
-                                [question.id]:
+                                e.target.value
 
-                                    e.target.value
-
-                            })
+                            )
 
                         }
 
-                        placeholder="Write your answer..."
-
                         style={{
 
-                            width: "100%",
+                            width:"100%",
 
-                            padding: 12
+                            padding:10
 
                         }}
 
@@ -505,17 +424,15 @@ export default function TakeQuiz({
 
             </div>
 
-            {/* NAVIGATION */}
-
             <div
 
                 style={{
 
-                    display: "flex",
+                    display:"flex",
 
-                    justifyContent: "space-between",
+                    justifyContent:"space-between",
 
-                    marginTop: 40
+                    marginTop:40
 
                 }}
 
@@ -523,13 +440,13 @@ export default function TakeQuiz({
 
                 <button
 
-                    disabled={currentQuestion === 0}
+                    disabled={currentQuestion===0}
 
-                    onClick={() =>
+                    onClick={()=>
 
                         setCurrentQuestion(
 
-                            currentQuestion - 1
+                            currentQuestion-1
 
                         )
 
@@ -541,31 +458,57 @@ export default function TakeQuiz({
 
                 </button>
 
-                <button
+                {
 
-                    disabled={
+                    currentQuestion===questions.length-1
 
-                        currentQuestion ===
+                    ?
 
-                        questions.length - 1
+                    <button
 
-                    }
+                        onClick={submitQuiz}
 
-                    onClick={() =>
+                        style={{
 
-                        setCurrentQuestion(
+                            background:"#16a34a",
 
-                            currentQuestion + 1
+                            color:"white",
 
-                        )
+                            padding:"10px 20px",
 
-                    }
+                            border:"none",
 
-                >
+                            borderRadius:8
 
-                    Next →
+                        }}
 
-                </button>
+                    >
+
+                        Submit Quiz
+
+                    </button>
+
+                    :
+
+                    <button
+
+                        onClick={()=>
+
+                            setCurrentQuestion(
+
+                                currentQuestion+1
+
+                            )
+
+                        }
+
+                    >
+
+                        Next →
+
+                    </button>
+
+                }
 
             </div>
 
