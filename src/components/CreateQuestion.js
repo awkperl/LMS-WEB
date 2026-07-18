@@ -9,7 +9,9 @@ export default function CreateQuestion({
 
   const [question, setQuestion] = useState("");
 
-  const [type, setType] = useState("short");
+  const [type, setType] = useState("multiple_choice");
+
+  const [points, setPoints] = useState(1);
 
   const [options, setOptions] = useState([
     "",
@@ -18,11 +20,9 @@ export default function CreateQuestion({
     ""
   ]);
 
-  const [correctAnswer, setCorrectAnswer] =
-    useState("");
+  const [correctAnswer, setCorrectAnswer] = useState("");
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
   const createQuestion = async () => {
 
@@ -31,12 +31,12 @@ export default function CreateQuestion({
       return;
     }
 
-    if (!correctAnswer.trim()) {
-      alert("Correct answer is required");
+    if (points < 1) {
+      alert("Points must be at least 1");
       return;
     }
 
-    if (type === "mcq") {
+    if (type === "multiple_choice") {
 
       for (let i = 0; i < options.length; i++) {
 
@@ -47,16 +47,27 @@ export default function CreateQuestion({
 
       }
 
-      if (!options.includes(correctAnswer)) {
-
-        alert(
-          "Correct answer must match one of the options."
-        );
-
+      if (!correctAnswer) {
+        alert("Select the correct answer.");
         return;
-
       }
 
+    }
+
+    if (
+      type === "short_answer" &&
+      !correctAnswer.trim()
+    ) {
+      alert("Correct answer is required.");
+      return;
+    }
+
+    if (
+      type === "true_false" &&
+      !correctAnswer
+    ) {
+      alert("Select True or False.");
+      return;
     }
 
     try {
@@ -69,12 +80,29 @@ export default function CreateQuestion({
 
         question,
 
-        correct_answer: correctAnswer,
+        type,
+
+        points,
 
         options:
-          type === "mcq"
+
+          type === "multiple_choice"
+
             ? options
-            : null
+
+            : type === "true_false"
+
+            ? ["True", "False"]
+
+            : null,
+
+        correct_answer:
+
+          type === "essay"
+
+            ? null
+
+            : correctAnswer
 
       };
 
@@ -88,6 +116,10 @@ export default function CreateQuestion({
       alert("Question added successfully.");
 
       setQuestion("");
+
+      setType("multiple_choice");
+
+      setPoints(1);
 
       setCorrectAnswer("");
 
@@ -133,9 +165,13 @@ export default function CreateQuestion({
 
         <select
           value={type}
-          onChange={(e) =>
-            setType(e.target.value)
-          }
+          onChange={(e) => {
+
+            setType(e.target.value);
+
+            setCorrectAnswer("");
+
+          }}
           style={{
             width: "100%",
             padding: 10,
@@ -143,12 +179,20 @@ export default function CreateQuestion({
           }}
         >
 
-          <option value="short">
+          <option value="multiple_choice">
+            Multiple Choice
+          </option>
+
+          <option value="true_false">
+            True / False
+          </option>
+
+          <option value="short_answer">
             Short Answer
           </option>
 
-          <option value="mcq">
-            Multiple Choice
+          <option value="essay">
+            Essay
           </option>
 
         </select>
@@ -156,6 +200,26 @@ export default function CreateQuestion({
       </div>
 
       <div style={{ marginBottom: 15 }}>
+
+        <label>Points</label>
+
+        <input
+          type="number"
+          min={1}
+          value={points}
+          onChange={(e) =>
+            setPoints(Number(e.target.value))
+          }
+          style={{
+            width: "100%",
+            padding: 10,
+            marginTop: 5
+          }}
+        />
+
+      </div>
+
+      <div style={{ marginBottom: 20 }}>
 
         <label>Question</label>
 
@@ -181,9 +245,9 @@ export default function CreateQuestion({
 
       </div>
 
-      {type === "mcq" && (
+      {type === "multiple_choice" && (
 
-        <div>
+        <>
 
           <label>Options</label>
 
@@ -217,33 +281,136 @@ export default function CreateQuestion({
 
           ))}
 
+          <div style={{ marginTop: 20 }}>
+
+            <label>Correct Answer</label>
+
+            <select
+
+              value={correctAnswer}
+
+              onChange={(e)=>
+                setCorrectAnswer(e.target.value)
+              }
+
+              style={{
+                width:"100%",
+                padding:10,
+                marginTop:5
+              }}
+
+            >
+
+              <option value="">
+                Select Correct Answer
+              </option>
+
+              {options.map((option,index)=>(
+
+                <option
+                  key={index}
+                  value={option}
+                >
+
+                  {option || `Option ${index+1}`}
+
+                </option>
+
+              ))}
+
+            </select>
+
+          </div>
+
+        </>
+
+      )}
+
+      {type === "true_false" && (
+
+        <div style={{ marginTop:20 }}>
+
+          <label>Correct Answer</label>
+
+          <select
+
+            value={correctAnswer}
+
+            onChange={(e)=>
+              setCorrectAnswer(e.target.value)
+            }
+
+            style={{
+              width:"100%",
+              padding:10,
+              marginTop:5
+            }}
+
+          >
+
+            <option value="">
+              Select
+            </option>
+
+            <option value="True">
+              True
+            </option>
+
+            <option value="False">
+              False
+            </option>
+
+          </select>
+
         </div>
 
       )}
 
-      <div style={{ marginTop: 20 }}>
+      {type === "short_answer" && (
 
-        <label>Correct Answer</label>
+        <div style={{ marginTop:20 }}>
 
-        <input
+          <label>Correct Answer</label>
 
-          value={correctAnswer}
+          <input
 
-          onChange={(e) =>
-            setCorrectAnswer(e.target.value)
-          }
+            value={correctAnswer}
 
-          placeholder="Correct Answer"
+            onChange={(e)=>
+              setCorrectAnswer(e.target.value)
+            }
 
+            placeholder="Correct Answer"
+
+            style={{
+              width:"100%",
+              padding:10,
+              marginTop:5
+            }}
+
+          />
+
+        </div>
+
+      )}
+
+      {type === "essay" && (
+
+        <div
           style={{
-            width: "100%",
-            padding: 10,
-            marginTop: 5
+            marginTop:20,
+            padding:15,
+            background:"#fef3c7",
+            borderRadius:8
           }}
+        >
 
-        />
+          Essay questions are manually graded.
+          No correct answer is required.
 
-      </div>
+        </div>
+
+      )}
 
       <button
 
@@ -253,29 +420,27 @@ export default function CreateQuestion({
 
         style={{
 
-          marginTop: 20,
+          marginTop:25,
 
-          width: "100%",
+          width:"100%",
 
-          padding: 14,
+          padding:14,
 
-          border: "none",
+          border:"none",
 
-          borderRadius: 8,
+          borderRadius:8,
 
-          background: "#111827",
+          background:"#111827",
 
-          color: "white",
+          color:"white",
 
-          cursor: "pointer"
+          cursor:"pointer"
 
         }}
 
       >
 
-        {loading
-          ? "Saving..."
-          : "Add Question"}
+        {loading ? "Saving..." : "Add Question"}
 
       </button>
 
