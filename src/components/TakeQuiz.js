@@ -9,25 +9,21 @@ export default function TakeQuiz({
 
 }) {
 
-    const [loading, setLoading] =
-        useState(true);
+    const [loading, setLoading] = useState(true);
 
-    const [error, setError] =
-        useState("");
+    const [error, setError] = useState("");
 
-    const [attempt, setAttempt] =
-        useState(null);
+    const [attempt, setAttempt] = useState(null);
 
-    const [quizData, setQuizData] =
-        useState(null);
+    const [quizData, setQuizData] = useState(null);
 
-    const [questions, setQuestions] =
-        useState([]);
-        const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [questions, setQuestions] = useState([]);
 
-const [answers, setAnswers] = useState({});
+    const [currentQuestion, setCurrentQuestion] = useState(0);
 
-const [timeLeft, setTimeLeft] = useState(0);
+    const [answers, setAnswers] = useState({});
+
+    const [timeLeft, setTimeLeft] = useState(0);
 
     useEffect(() => {
 
@@ -39,42 +35,23 @@ const [timeLeft, setTimeLeft] = useState(0);
 
         try {
 
-            setLoading(true);
-
             const response = await api(
 
                 "/quizzes/start",
-
                 "POST",
-
                 {
-
                     quiz_id: quiz.id
-
                 },
-
                 token
 
             );
 
-            setAttempt(
+            setAttempt(response.attempt);
 
-                response.attempt
+            setQuizData(response.quiz);
 
-            );
+            setQuestions(response.questions);
 
-            setQuizData(
-
-                response.quiz
-
-            );
-
-            setQuestions(
-
-                response.questions || []
-
-            );
-            console.log(response.questions);
             setTimeLeft(response.quiz.time_limit * 60);
 
         }
@@ -83,13 +60,7 @@ const [timeLeft, setTimeLeft] = useState(0);
 
             console.error(err);
 
-            setError(
-
-                err.message ||
-
-                "Unable to start quiz."
-
-            );
+            setError(err.message);
 
         }
 
@@ -100,82 +71,145 @@ const [timeLeft, setTimeLeft] = useState(0);
         }
 
     };
+
     useEffect(() => {
 
-    if (timeLeft <= 0) return;
+        if (timeLeft <= 0) {
 
-    const timer = setInterval(() => {
+            if (attempt) {
 
-        setTimeLeft(prev => prev - 1);
+                submitQuiz();
 
-    }, 1000);
+            }
 
-    return () => clearInterval(timer);
+            return;
 
-}, [timeLeft]);
-const minutes = Math.floor(timeLeft / 60);
+        }
 
-const seconds = timeLeft % 60;
-const question = questions[currentQuestion];
+        const timer = setInterval(() => {
+
+            setTimeLeft(prev => prev - 1);
+
+        }, 1000);
+
+        return () => clearInterval(timer);
+
+    }, [timeLeft]);
+
+    const saveAnswer = async (questionId, answer) => {
+
+        if (!attempt) return;
+
+        try {
+
+            await api(
+
+                "/quizzes/answer",
+
+                "POST",
+
+                {
+
+                    attempt_id: attempt.id,
+
+                    question_id: questionId,
+
+                    answer
+
+                },
+
+                token
+
+            );
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
+
+    const handleAnswer = (questionId, value) => {
+
+        setAnswers(prev => ({
+
+            ...prev,
+
+            [questionId]: value
+
+        }));
+
+        saveAnswer(questionId, value);
+
+    };
+
+    const submitQuiz = async () => {
+
+        try {
+
+            const result = await api(
+
+                "/quizzes/submit",
+
+                "POST",
+
+                {
+
+                    attempt_id: attempt.id
+
+                },
+
+                token
+
+            );
+
+            alert(
+
+                `Quiz Submitted\n\nScore: ${result.score}/${result.totalQuestions}\nPercentage: ${result.percentage}%`
+
+            );
+
+            goBack();
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+        }
+
+    };
 
     if (loading) {
 
-        return (
-
-            <div style={{ padding:40 }}>
-
-                <h2>
-
-                    Starting Quiz...
-
-                </h2>
-
-            </div>
-
-        );
+        return <h2>Starting Quiz...</h2>;
 
     }
 
     if (error) {
 
-        return (
-
-            <div style={{ padding:40 }}>
-
-                <h2>
-
-                    {error}
-
-                </h2>
-
-                <button
-
-                    onClick={goBack}
-
-                >
-
-                    Back
-
-                </button>
-
-            </div>
-
-        );
+        return <h2>{error}</h2>;
 
     }
 
+    const question = questions[currentQuestion];
+
+    const minutes = Math.floor(timeLeft / 60);
+
+    const seconds = String(timeLeft % 60).padStart(2, "0");
+
     return (
 
-        <div
-            style={{
-                padding:40
-            }}
-        >
+        <div style={{ padding:40 }}>
 
-            <button
-                onClick={goBack}
-            >
+            <button onClick={goBack}>
+
                 ← Back
+
             </button>
 
             <h1>
@@ -186,122 +220,297 @@ const question = questions[currentQuestion];
 
             <p>
 
-                Time Limit:
-
-                {" "}
-
-                {quizData.time_limit}
-
-                {" "}
-
-                minutes
+                Time Limit: {quizData.time_limit} minutes
 
             </p>
 
-            <hr />
+            <hr/>
 
             <div
-    style={{
-        background: "#f9fafb",
-        padding: 20,
-        borderRadius: 10,
-        marginTop: 20
-    }}
->
 
-    <h2>
+                style={{
 
-        Time Remaining
+                    background:"#f9fafb",
 
-    </h2>
+                    padding:20,
 
-    <h1
-        style={{
-            color: "#dc2626"
-        }}
-    >
+                    borderRadius:10,
 
-        {minutes}:
+                    marginBottom:30
 
-        {seconds
-            .toString()
-            .padStart(2, "0")}
+                }}
 
-    </h1>
+            >
 
-</div>
+                <h2>Time Remaining</h2>
 
-<hr />
+                <h1 style={{color:"#dc2626"}}>
 
-<h2>
+                    {minutes}:{seconds}
 
-    Question
+                </h1>
 
-    {" "}
+            </div>
 
-    {currentQuestion + 1}
+            <div
 
-    {" "}
+                style={{
 
-    of
+                    display:"flex",
 
-    {" "}
+                    gap:10,
 
-    {questions.length}
+                    flexWrap:"wrap",
 
-</h2>
+                    marginBottom:25
 
-<h3>
+                }}
 
-    {question.question}
+            >
 
-</h3>
+                {questions.map((q,index)=>(
 
-<div
-    style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 15,
-        marginTop: 20
-    }}
->
+                    <button
 
-{Array.isArray(question.options) && question.options.length > 0 ? (
+                        key={q.id}
 
-    question.options.map(option => (
-        <label key={option}>
-            <input
-                type="radio"
-                name={`answer-${question.id}`}
-                checked={answers[question.id] === option}
-                onChange={() =>
-                    setAnswers({
-                        ...answers,
-                        [question.id]: option
-                    })
+                        onClick={()=>setCurrentQuestion(index)}
+
+                        style={{
+
+                            width:45,
+
+                            height:45,
+
+                            borderRadius:"50%",
+
+                            border:"none",
+
+                            cursor:"pointer",
+
+                            background:
+
+                                answers[q.id]
+
+                                ? "#16a34a"
+
+                                : index===currentQuestion
+
+                                ? "#2563eb"
+
+                                : "#d1d5db",
+
+                            color:"white"
+
+                        }}
+
+                    >
+
+                        {index+1}
+
+                    </button>
+
+                ))}
+
+            </div>
+
+            <h2>
+
+                Question {currentQuestion+1} of {questions.length}
+
+            </h2>
+
+            <h3>
+
+                {question.question}
+
+            </h3>
+
+            <div
+
+                style={{
+
+                    marginTop:20,
+
+                    display:"flex",
+
+                    flexDirection:"column",
+
+                    gap:12
+
+                }}
+
+            >
+
+                {Array.isArray(question.options)
+
+                && question.options.length>0 ? (
+
+                    question.options.map(option=>(
+
+                        <label key={option}>
+
+                            <input
+
+                                type="radio"
+
+                                checked={
+
+                                    answers[question.id]===option
+
+                                }
+
+                                onChange={()=>
+
+                                    handleAnswer(
+
+                                        question.id,
+
+                                        option
+
+                                    )
+
+                                }
+
+                            />
+
+                            {" "}
+
+                            {option}
+
+                        </label>
+
+                    ))
+
+                )
+
+                :
+
+                (
+
+                    <textarea
+
+                        rows={4}
+
+                        value={
+
+                            answers[question.id] || ""
+
+                        }
+
+                        onChange={(e)=>
+
+                            handleAnswer(
+
+                                question.id,
+
+                                e.target.value
+
+                            )
+
+                        }
+
+                        style={{
+
+                            width:"100%",
+
+                            padding:10
+
+                        }}
+
+                    />
+
+                )}
+
+            </div>
+
+            <div
+
+                style={{
+
+                    display:"flex",
+
+                    justifyContent:"space-between",
+
+                    marginTop:40
+
+                }}
+
+            >
+
+                <button
+
+                    disabled={currentQuestion===0}
+
+                    onClick={()=>
+
+                        setCurrentQuestion(
+
+                            currentQuestion-1
+
+                        )
+
+                    }
+
+                >
+
+                    ← Previous
+
+                </button>
+
+                {
+
+                    currentQuestion===questions.length-1
+
+                    ?
+
+                    <button
+
+                        onClick={submitQuiz}
+
+                        style={{
+
+                            background:"#16a34a",
+
+                            color:"white",
+
+                            padding:"10px 20px",
+
+                            border:"none",
+
+                            borderRadius:8
+
+                        }}
+
+                    >
+
+                        Submit Quiz
+
+                    </button>
+
+                    :
+
+                    <button
+
+                        onClick={()=>
+
+                            setCurrentQuestion(
+
+                                currentQuestion+1
+
+                            )
+
+                        }
+
+                    >
+
+                        Next →
+
+                    </button>
+
                 }
-            />
-            {option}
-        </label>
-    ))
 
-) : (
-
-    <input
-        type="text"
-        placeholder="Type your answer..."
-        value={answers[question.id] || ""}
-        onChange={(e) =>
-            setAnswers({
-                ...answers,
-                [question.id]: e.target.value
-            })
-        }
-    />
-
-)}
-
-</div>
+            </div>
 
         </div>
 
