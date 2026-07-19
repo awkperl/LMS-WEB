@@ -24,6 +24,7 @@ export default function TakeQuiz({
     const [answers, setAnswers] = useState({});
 
     const [timeLeft, setTimeLeft] = useState(0);
+    const [reviewMode, setReviewMode] = useState(false);
 
     useEffect(() => {
 
@@ -197,6 +198,167 @@ export default function TakeQuiz({
     }
 
     const question = questions[currentQuestion];
+    if (reviewMode) {
+
+    const answered = Object.keys(answers).length;
+
+    return (
+
+        <div style={{ padding:40 }}>
+
+            <h1>
+
+                Review Answers
+
+            </h1>
+
+            <p>
+
+                Answered
+
+                {" "}
+
+                {answered}
+
+                {" "}
+
+                of
+
+                {" "}
+
+                {questions.length}
+
+                {" "}questions
+
+            </p>
+
+            <hr />
+
+            <div
+
+                style={{
+
+                    display:"grid",
+
+                    gridTemplateColumns:"repeat(auto-fill,60px)",
+
+                    gap:15,
+
+                    marginTop:30,
+
+                    marginBottom:40
+
+                }}
+
+            >
+
+                {questions.map((q,index)=>(
+
+                    <button
+
+                        key={q.id}
+
+                        onClick={()=>{
+
+                            setCurrentQuestion(index);
+
+                            setReviewMode(false);
+
+                        }}
+
+                        style={{
+
+                            width:60,
+
+                            height:60,
+
+                            border:"none",
+
+                            borderRadius:10,
+
+                            cursor:"pointer",
+
+                            background:
+
+                                answers[q.id]
+
+                                ? "#16a34a"
+
+                                : "#dc2626",
+
+                            color:"white",
+
+                            fontWeight:"bold"
+
+                        }}
+
+                    >
+
+                        {index+1}
+
+                    </button>
+
+                ))}
+
+            </div>
+
+            <div
+
+                style={{
+
+                    display:"flex",
+
+                    justifyContent:"space-between"
+
+                }}
+
+            >
+
+                <button
+
+                    onClick={()=>
+
+                        setReviewMode(false)
+
+                    }
+
+                >
+
+                    ← Back To Quiz
+
+                </button>
+
+                <button
+
+                    onClick={submitQuiz}
+
+                    style={{
+
+                        background:"#2563eb",
+
+                        color:"white",
+
+                        border:"none",
+
+                        padding:"12px 25px",
+
+                        borderRadius:8
+
+                    }}
+
+                >
+
+                    Submit Quiz
+
+                </button>
+
+            </div>
+
+        </div>
+
+    );
+
+}
 
     const minutes = Math.floor(timeLeft / 60);
 
@@ -459,34 +621,33 @@ export default function TakeQuiz({
                 </button>
 
                 {
+currentQuestion === questions.length - 1
 
-                    currentQuestion===questions.length-1
+?
 
-                    ?
+<button
 
-                    <button
+    onClick={() => setReviewMode(true)}
 
-                        onClick={submitQuiz}
+    style={{
 
-                        style={{
+        background:"#16a34a",
 
-                            background:"#16a34a",
+        color:"white",
 
-                            color:"white",
+        padding:"10px 20px",
 
-                            padding:"10px 20px",
+        border:"none",
 
-                            border:"none",
+        borderRadius:8
 
-                            borderRadius:8
+    }}
 
-                        }}
+>
 
-                    >
+    Review Answers
 
-                        Submit Quiz
-
-                    </button>
+</button>
 
                     :
 
