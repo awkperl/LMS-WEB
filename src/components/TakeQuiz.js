@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
+import QuizResult from "./QuizResult";
 
 export default function TakeQuiz({
 
@@ -25,6 +26,7 @@ export default function TakeQuiz({
 
     const [timeLeft, setTimeLeft] = useState(0);
     const [reviewMode, setReviewMode] = useState(false);
+    const [result, setResult] = useState(null);
 
     useEffect(() => {
 
@@ -167,13 +169,7 @@ export default function TakeQuiz({
 
             );
 
-            alert(
-
-                `Quiz Submitted\n\nScore: ${result.score}/${result.totalQuestions}\nPercentage: ${result.percentage}%`
-
-            );
-
-            goBack();
+           setResult(result);
 
         }
 
@@ -184,6 +180,23 @@ export default function TakeQuiz({
         }
 
     };
+    if (result) {
+
+    return (
+
+        <QuizResult
+
+            result={result}
+
+            quiz={quizData}
+
+            onFinish={goBack}
+
+        />
+
+    );
+
+}
 
     if (loading) {
 
