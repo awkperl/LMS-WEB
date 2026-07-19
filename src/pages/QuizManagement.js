@@ -19,6 +19,7 @@ export default function QuizManagement({
   useState(null);
   const [previewQuiz, setPreviewQuiz] =
 useState(null);
+const [tab, setTab] = useState("questions");
 
   const [title, setTitle] = useState("");
   const [timeLimit, setTimeLimit] = useState(30);
@@ -264,6 +265,17 @@ useState(null);
       <button onClick={createQuiz}>
         Create Quiz
       </button>
+      <button
+    onClick={() => setTab("questions")}
+>
+    Questions
+</button>
+
+<button
+    onClick={() => setTab("attempts")}
+>
+    Attempts
+</button>
 
       <hr />
 
@@ -373,6 +385,23 @@ borderRadius:6
         ))
 
       )}
+      {tab === "questions" && (
+
+    <QuestionManagement
+        quizId={selectedQuiz.id}
+        token={token}
+    />
+
+)}
+
+{tab === "attempts" && (
+
+    <QuizAttempts
+        quizId={selectedQuiz.id}
+        token={token}
+    />
+
+)}
 
 {editingQuiz && (
 
