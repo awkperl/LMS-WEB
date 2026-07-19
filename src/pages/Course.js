@@ -6,6 +6,7 @@ import AssignmentStatusBadge from "../components/AssignmentStatusBadge";
 import InstructorSubmissions from "../components/InstructorSubmissions";
 import QuizManagement from "./QuizManagement";
 import StudentQuizList from "../components/StudentQuizList";
+import QuizHistory from "../components/QuizHistory";
 
 
 export default function Course({
@@ -217,7 +218,25 @@ export default function Course({
   >
     📝 Quizzes
   </button>
-
+<button
+  onClick={() => setTab("history")}
+  style={{
+    padding: "10px 20px",
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    background:
+      tab === "history"
+        ? "#111827"
+        : "#e5e7eb",
+    color:
+      tab === "history"
+        ? "white"
+        : "#111827"
+  }}
+>
+  📊 Quiz History
+</button>
 </div>
 
 {tab === "assignments" && (
@@ -509,6 +528,7 @@ export default function Course({
 </>
 
 )}
+
 {tab === "quizzes" && (
 
   ["admin", "instructor"].includes(user?.role) ? (
@@ -526,6 +546,16 @@ export default function Course({
     />
 
   )
+
+)}
+
+{tab === "history" && (
+
+    <QuizHistory
+
+        token={token}
+
+    />
 
 )}
     </div>
