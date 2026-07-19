@@ -4,6 +4,7 @@ import CreateQuestion from "../components/CreateQuestion";
 import EditQuestion from "../components/EditQuestion";
 import EditQuiz from "../components/EditQuiz";
 import QuizPreview from "../components/QuizPreview";
+import QuizAttempts from "../components/QuizAttempts";
 
 export default function QuizManagement({
   courseId,
