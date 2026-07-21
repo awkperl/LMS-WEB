@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
+import ViewAttempt from "./ViewAttempt";
 
 export default function QuizAttempts({
 
@@ -9,10 +10,12 @@ export default function QuizAttempts({
 }) {
 
     const [attempts, setAttempts] = useState([]);
+    const [selectedAttempt, setSelectedAttempt] = useState(null);
 
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
+    
 
     useEffect(() => {
 
@@ -84,6 +87,27 @@ export default function QuizAttempts({
         return <h3>{error}</h3>;
 
     }
+    if (selectedAttempt) {
+
+    return (
+
+        <ViewAttempt
+
+            attemptId={selectedAttempt}
+
+            token={token}
+
+            close={()=>
+
+                setSelectedAttempt(null)
+
+            }
+
+        />
+
+    );
+
+}
 
     return (
 
@@ -257,37 +281,33 @@ export default function QuizAttempts({
 
                                         <button
 
-                                            style={{
+    onClick={()=>
 
-                                                background:"#2563eb",
+        setSelectedAttempt(attempt.id)
 
-                                                color:"white",
+    }
 
-                                                border:"none",
+    style={{
 
-                                                borderRadius:6,
+        background:"#2563eb",
 
-                                                padding:"8px 15px",
+        color:"white",
 
-                                                cursor:"pointer"
+        border:"none",
 
-                                            }}
+        borderRadius:6,
 
-                                            onClick={() => {
+        padding:"8px 16px",
 
-                                                alert(
+        cursor:"pointer"
 
-                                                    "View Attempt coming in Phase 2.6"
+    }}
 
-                                                );
+>
 
-                                            }}
+    View
 
-                                        >
-
-                                            View
-
-                                        </button>
+</button>
 
                                     </td>
 
