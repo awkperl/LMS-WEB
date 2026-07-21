@@ -266,17 +266,7 @@ const [tab, setTab] = useState("questions");
       <button onClick={createQuiz}>
         Create Quiz
       </button>
-      <button
-    onClick={() => setTab("questions")}
->
-    Questions
-</button>
-
-<button
-    onClick={() => setTab("attempts")}
->
-    Attempts
-</button>
+  
 
       <hr />
 
@@ -444,7 +434,58 @@ borderRadius:6
           <hr />
 
           <h2>{selectedQuiz.title}</h2>
+          <div
+    style={{
+        display: "flex",
+        gap: 10,
+        marginBottom: 20
+    }}
+>
 
+    <button
+        onClick={() => setTab("questions")}
+        style={{
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            background:
+                tab === "questions"
+                    ? "#111827"
+                    : "#e5e7eb",
+            color:
+                tab === "questions"
+                    ? "white"
+                    : "#111827"
+        }}
+    >
+        📝 Questions
+    </button>
+
+    <button
+        onClick={() => setTab("attempts")}
+        style={{
+            padding: "10px 20px",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            background:
+                tab === "attempts"
+                    ? "#111827"
+                    : "#e5e7eb",
+            color:
+                tab === "attempts"
+                    ? "white"
+                    : "#111827"
+        }}
+    >
+        📊 Attempts
+    </button>
+
+</div>
+{tab === "questions" && (
+
+<>
           <p>Questions</p>
 
           {questions.length === 0 ? (
@@ -592,6 +633,9 @@ borderRadius:6
 
 ) : (
 
+
+ 
+
   <CreateQuestion
     quizId={selectedQuiz.id}
     token={token}
@@ -599,6 +643,18 @@ borderRadius:6
       loadQuestions(selectedQuiz.id)
     }
   />
+
+)}
+
+ </>
+
+)}
+{tab === "attempts" && selectedQuiz && (
+
+    <QuizAttempts
+        quizId={selectedQuiz.id}
+        token={token}
+    />
 
 )}
 
