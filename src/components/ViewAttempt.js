@@ -14,6 +14,7 @@ export default function ViewAttempt({
     const [attempt, setAttempt] = useState(null);
 
     const [questions, setQuestions] = useState([]);
+    const [grades, setGrades] = useState({});
 
     const [error, setError] = useState("");
 
@@ -60,6 +61,42 @@ export default function ViewAttempt({
         }
 
     };
+
+    const saveGrade = async (answerId) => {
+
+    try {
+
+        await api(
+
+            `/quizzes/answer/${answerId}/grade`,
+
+            "PUT",
+
+            {
+
+                points: Number(grades[answerId])
+
+            },
+
+            token
+
+        );
+
+        alert("Grade saved successfully.");
+
+        loadAttempt();
+
+    }
+
+    catch (err) {
+
+        console.error(err);
+
+        alert(err.message);
+
+    }
+
+};
 
     if (loading) {
 
@@ -217,6 +254,121 @@ export default function ViewAttempt({
                             {q.student_answer || "-"}
 
                         </div>
+
+{
+
+q.type === "essay" && (
+
+<div
+    style={{
+        marginTop:20,
+        padding:15,
+        background:"#f3f4f6",
+        borderRadius:8
+    }}
+>
+
+<h4>
+
+Instructor Grade
+
+</h4>
+
+<p>
+
+Maximum Points:
+
+<b>
+
+{" "}
+
+{q.points}
+
+</b>
+
+</p>
+
+<input
+
+type="number"
+
+min={0}
+
+max={q.points}
+
+value={
+
+grades[q.answer_id] ??
+
+q.awarded_points ??
+
+""
+
+}
+
+onChange={(e)=>
+
+setGrades({
+
+...grades,
+
+[q.answer_id]: e.target.value
+
+})
+
+}
+
+style={{
+
+width:120,
+
+padding:8,
+
+marginRight:10
+
+}}
+
+/>
+
+<button
+
+onClick={()=>
+
+saveGrade(
+
+q.answer_id
+
+)
+
+}
+
+style={{
+
+background:"#2563eb",
+
+color:"white",
+
+border:"none",
+
+padding:"8px 15px",
+
+borderRadius:6,
+
+cursor:"pointer"
+
+}}
+
+>
+
+Save Grade
+
+</button>
+
+</div>
+
+)
+
+}
 
                         {
 
