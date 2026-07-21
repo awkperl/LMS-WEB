@@ -309,11 +309,13 @@ const [tab, setTab] = useState("questions");
 
 <button
 
-onClick={()=>{
+onClick={async ()=>{
 
 setSelectedQuiz(quiz);
 
-loadQuestions(quiz.id);
+setTab("questions");
+
+await loadQuestions(quiz.id);
 
 }}
 
@@ -376,24 +378,6 @@ borderRadius:6
         ))
 
       )}
-      {tab === "questions" && (
-
-    <QuestionManagement
-        quizId={selectedQuiz.id}
-        token={token}
-    />
-
-)}
-
-{tab === "attempts" && (
-
-    <QuizAttempts
-        quizId={selectedQuiz.id}
-        token={token}
-    />
-
-)}
-
 {editingQuiz && (
 
   <EditQuiz
