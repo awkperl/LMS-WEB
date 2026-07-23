@@ -61,13 +61,7 @@ export default function ViewAttempt({
         }
 
     };
-
-    const saveGrade = async (answerId) => {
-         console.log("Attempt ID:", attemptId);
-
-    console.log("Answer ID:", answerId);
-
-    console.log("Grade:", grades[answerId]);
+const saveGrade = async (answerId) => {
 
     try {
 
@@ -78,18 +72,20 @@ export default function ViewAttempt({
             "PUT",
 
             {
-
                 points: Number(grades[answerId])
-
             },
 
             token
 
         );
 
-        alert("Grade saved successfully.");
+        // Reload the updated attempt
+        await loadAttempt();
 
-        loadAttempt();
+        // Clear temporary input state
+        setGrades({});
+
+        alert("Grade saved successfully.");
 
     }
 
@@ -302,13 +298,9 @@ min={0}
 max={q.points}
 
 value={
-
-grades[q.answer_id] ??
-
-q.awarded_points ??
-
-""
-
+    grades[q.answer_id] !== undefined
+        ? grades[q.answer_id]
+        : (q.awarded_points ?? "")
 }
 
 onChange={(e)=>
