@@ -63,6 +63,11 @@ export default function ViewAttempt({
     };
 
     const saveGrade = async (answerId) => {
+         console.log("Attempt ID:", attemptId);
+
+    console.log("Answer ID:", answerId);
+
+    console.log("Grade:", grades[answerId]);
 
     try {
 
