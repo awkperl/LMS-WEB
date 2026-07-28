@@ -10,6 +10,7 @@ import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
 import Library from "./Library";
 import QuizManagement from "./QuizManagement";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 
 
 export default function Dashboard({ token }) {
@@ -220,6 +221,8 @@ export default function Dashboard({ token }) {
           >
             📊 Analytics
           </div>
+          
+          <AnalyticsDashboard token={token} />
 
           {/* CERTIFICATES */}
           <div
