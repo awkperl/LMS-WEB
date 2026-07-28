@@ -78,7 +78,6 @@ const saveGrade = async (answerId) => {
             token
 
         );
-        console.log(data.questions);
 
         // Reload the updated attempt
         await loadAttempt();
