@@ -363,6 +363,11 @@ cursor:"pointer"
 Save Grade
 
 </button>
+<p>
+    Awarded Points:
+    {" "}
+    {q.awarded_points ?? "Not graded"}
+</p>
 
 </div>
 
