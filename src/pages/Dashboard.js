@@ -221,8 +221,21 @@ export default function Dashboard({ token }) {
           >
             📊 Analytics
           </div>
+
           
-          <AnalyticsDashboard token={token} />
+          {/* analytics dashboard */}
+          <div
+            onClick={() =>
+              setPage(
+                "AnalyticsDashboard"
+              )
+            }
+            style={menuStyle(
+              page === "AnalyticsDashboard"
+            )}
+          >
+             analyticsdashboard
+          </div>
 
           {/* CERTIFICATES */}
           <div
