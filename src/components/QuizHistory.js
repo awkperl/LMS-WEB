@@ -7,9 +7,13 @@ export default function QuizHistory({ token }) {
 
     useEffect(() => {
 
+    if(token){
+
         loadHistory();
 
-    }, []);
+    }
+
+}, [token]);
 
     const loadHistory = async () => {
 
@@ -95,19 +99,13 @@ export default function QuizHistory({ token }) {
 
                         </h3>
 
-                        <p>
-
-                            Score:
-
-                            {" "}
-
-                            {item.score}
-
-                            /
-
-                            {item.total_questions}
-
-                        </p>
+                      <p>
+    Score:
+    {" "}
+    {item.score}
+    /
+    {item.totalPoints}
+</p>
 
                         <p>
 
