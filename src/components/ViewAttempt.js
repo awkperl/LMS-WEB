@@ -306,8 +306,13 @@ value={
         : (q.awarded_points ?? "")
 }
 
-onChange={(e)=>
-
+onChange={(e)=>{
+      console.log(
+        "Typing:",
+        q.answer_id,
+        e.target.value
+    );
+   
 setGrades({
 
 ...grades,
@@ -316,7 +321,7 @@ setGrades({
 
 })
 
-}
+}}
 
 style={{
 
