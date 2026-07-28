@@ -173,7 +173,7 @@ const saveGrade = async (answerId) => {
 
                 /
 
-                {attempt.totalQuestions}
+                {attempt.totalPoints}
 
             </p>
 
