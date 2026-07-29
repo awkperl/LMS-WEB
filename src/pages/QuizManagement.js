@@ -5,6 +5,7 @@ import EditQuestion from "../components/EditQuestion";
 import EditQuiz from "../components/EditQuiz";
 import QuizPreview from "../components/QuizPreview";
 import QuizAttempts from "../components/QuizAttempts";
+import QuizAnalytics from "../components/QuizAnalytics";
 
 export default function QuizManagement({
   courseId,
@@ -466,6 +467,12 @@ borderRadius:6
         📊 Attempts
     </button>
 
+    <button
+    onClick={() => setTab("analytics")}
+>
+    Analytics
+</button>
+
 </div>
 {tab === "questions" && (
 
@@ -638,6 +645,18 @@ borderRadius:6
     <QuizAttempts
         quizId={selectedQuiz.id}
         token={token}
+    />
+
+)}
+
+{tab === "analytics" && selectedQuiz && (
+
+    <QuizAnalytics
+
+        quizId={selectedQuiz.id}
+
+        token={token}
+
     />
 
 )}
