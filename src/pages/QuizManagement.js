@@ -467,10 +467,24 @@ borderRadius:6
         📊 Attempts
     </button>
 
-    <button
+   <button
     onClick={() => setTab("analytics")}
+    style={{
+        padding: "10px 20px",
+        border: "none",
+        borderRadius: 8,
+        cursor: "pointer",
+        background:
+            tab === "analytics"
+                ? "#111827"
+                : "#e5e7eb",
+        color:
+            tab === "analytics"
+                ? "white"
+                : "#111827"
+    }}
 >
-    Analytics
+    📈 Analytics
 </button>
 
 </div>
