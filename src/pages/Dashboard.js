@@ -238,18 +238,20 @@ export default function Dashboard({ token }) {
           </div>
 
           {/* CERTIFICATES */}
-          <div
-            onClick={() =>
-              setPage(
-                "certificates"
-              )
-            }
-            style={menuStyle(
-              page === "certificates"
-            )}
-          >
-            🏆 Certifications
-          </div>
+{["admin", "instructor", "student"].includes(user?.role) && (
+
+  <div
+    onClick={() =>
+      setPage("certificates")
+    }
+    style={menuStyle(
+      page === "certificates"
+    )}
+  >
+    🏆 Certificates
+  </div>
+
+)}
           <div
   onClick={() => setPage("library")}
   style={menuStyle(page === "library")}
