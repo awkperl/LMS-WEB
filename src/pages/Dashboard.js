@@ -554,16 +554,22 @@ export default function Dashboard({ token }) {
 
 )}
 
-        {/* CERTIFICATES */}
-        {page ===
-          "certificates" && (
-
-          
-          <Certificates
-   token={token}
-/>
-
+   {page === "certificates" && (
+    <>
+        {(user?.role === "instructor" || user?.role === "admin") && (
+            <CertificateStudents
+                courseId={courseId}
+                token={token}
+            />
         )}
+
+        {user?.role === "student" && (
+            <Certificates
+                token={token}
+            />
+        )}
+    </>
+)}
 
         {page === "library" && (
   <Library token={token} />
