@@ -6,6 +6,7 @@ import CreateCourse from "./CreateCourse";
 import Notifications from "./Notifications";
 import Exams from "./Exams";
 import Certificates from "./Certificates";
+import CertificateStudents from "../components/CertificateStudents";
 import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
 import Library from "./Library";
