@@ -1,4 +1,4 @@
-import AnalyticsOverview from "./AnalyticsOverview";
+import AnalyticsOverview from "../components/AnalyticsOverview";
 
 export default function AnalyticsDashboard({ token }) {
 
