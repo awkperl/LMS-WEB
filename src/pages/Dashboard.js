@@ -7,6 +7,7 @@ import Notifications from "./Notifications";
 import Exams from "./Exams";
 import Certificates from "./Certificates";
 import CertificateStudents from "../components/CertificateStudents";
+import CertificateManagement from "./CertificateManagement";
 import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
 import Library from "./Library";
@@ -238,19 +239,32 @@ export default function Dashboard({ token }) {
              analyticsdashboard
           </div>
 
-          {/* CERTIFICATES */}
-{["admin", "instructor", "student"].includes(user?.role) && (
+ {/* CERTIFICATES */}
 
-  <div
-    onClick={() =>
-      setPage("certificates")
-    }
-    style={menuStyle(
-      page === "certificates"
-    )}
-  >
-    🏆 Certificates
-  </div>
+{user?.role === "student" && (
+
+    <div
+        onClick={() => setPage("certificates")}
+        style={menuStyle(
+            page === "certificates"
+        )}
+    >
+        🏆 Certificates
+    </div>
+
+)}
+
+{(user?.role === "instructor" ||
+  user?.role === "admin") && (
+
+    <div
+        onClick={() => setPage("certificate-management")}
+        style={menuStyle(
+            page === "certificate-management"
+        )}
+    >
+        🏆 Certificate Management
+    </div>
 
 )}
           <div
@@ -552,6 +566,12 @@ export default function Dashboard({ token }) {
       token={token}
    />
 
+)}
+{page === "certificate-management" && (
+    <CertificateManagement
+        courseId={courseId}
+        token={token}
+    />
 )}
 
    {page === "certificates" && (
