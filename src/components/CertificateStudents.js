@@ -43,6 +43,37 @@ export default function CertificateStudents({
         }
 
     };
+    const generateCertificate = async (studentId) => {
+
+    try {
+
+        const result = await api(
+            "/certificates/generate",
+            "POST",
+            {
+                courseId: courseId,
+                studentId: studentId
+            },
+            token
+        );
+
+        alert(
+            result.message ||
+            "Certificate generated successfully."
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(
+            err.message ||
+            "Failed to generate certificate."
+        );
+
+    }
+
+};
 
     if (loading) {
 
@@ -113,12 +144,9 @@ export default function CertificateStudents({
                                         borderRadius: 6,
                                         cursor: "pointer"
                                     }}
-                                    onClick={() => {
-
-                                        // Certificate generation
-                                        // will be connected here.
-
-                                    }}
+                                  onClick={() =>
+    generateCertificate(student.student_id)
+}
                                 >
                                     🎓 Generate Certificate
                                 </button>
