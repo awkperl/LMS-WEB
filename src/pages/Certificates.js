@@ -17,12 +17,13 @@ export default function Certificates({ token }) {
 
     try {
 
-      const data = await api(
-        "/certificates",
+      const data =
+    await api(
+        "/certificates/student",
         "GET",
         null,
         token
-      );
+    );
 
       console.log("CERTIFICATES:", data);
 
