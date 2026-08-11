@@ -149,14 +149,14 @@ export default function CertificateStudents({
     try {
 
         const result = await api(
-            "/certificates",
-            "POST",
-            {
-                courseId: courseId,
-                studentId: student.student_id
-            },
-            token
-        );
+    "/certificates/generate",
+    "POST",
+    {
+        courseId: courseId,
+        studentId: student.student_id
+    },
+    token
+);
 
         alert(
             result.message ||
