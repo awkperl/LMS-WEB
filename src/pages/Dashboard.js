@@ -279,7 +279,7 @@ export default function Dashboard({ token }) {
                 page === "certificates"
               )}
             >
-              🏆 Certificates
+           
             </div>
 
           )}
