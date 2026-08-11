@@ -144,9 +144,37 @@ export default function CertificateStudents({
                                         borderRadius: 6,
                                         cursor: "pointer"
                                     }}
-                                  onClick={() =>
-    generateCertificate(student.student_id)
-}
+    onClick={async () => {
+
+    try {
+
+        const result = await api(
+            "/certificates",
+            "POST",
+            {
+                courseId: courseId,
+                studentId: student.student_id
+            },
+            token
+        );
+
+        alert(
+            result.message ||
+            "Certificate generated successfully."
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(
+            err.message ||
+            "Failed to generate certificate."
+        );
+
+    }
+
+}}
                                 >
                                     🎓 Generate Certificate
                                 </button>
