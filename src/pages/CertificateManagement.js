@@ -13,7 +13,7 @@ export default function CertificateManagement({
 
         <div style={{ padding: 30 }}>
 
-            <h1>Certificate Management</h1>
+            <h1>Certificate Management Certificate Management TEST</h1>
 
             <p>
                 Review student eligibility and generate certificates.
