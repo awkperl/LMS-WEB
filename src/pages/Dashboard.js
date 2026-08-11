@@ -6,7 +6,6 @@ import CreateCourse from "./CreateCourse";
 import Notifications from "./Notifications";
 import Exams from "./Exams";
 import Certificates from "./Certificates";
-import CertificateStudents from "../components/CertificateStudents";
 import CertificateManagement from "./CertificateManagement";
 import BrowseCourses from "./BrowseCourses";
 import Analytics from "./Analytics";
@@ -18,6 +17,7 @@ import AnalyticsDashboard from "./AnalyticsDashboard";
 export default function Dashboard({ token }) {
 
   const [courses, setCourses] = useState([]);
+
   const [selectedCourse, setSelectedCourse] =
     useState(null);
 
@@ -28,6 +28,7 @@ export default function Dashboard({ token }) {
     localStorage.getItem("user")
   );
 
+
   // LOAD COURSES
   useEffect(() => {
 
@@ -35,7 +36,8 @@ export default function Dashboard({ token }) {
 
   }, [token]);
 
-  // LOAD COURSES FUNCTION
+
+  // LOAD COURSES
   const loadCourses = async () => {
 
     try {
@@ -54,12 +56,12 @@ export default function Dashboard({ token }) {
       console.error(err);
 
     }
+
   };
 
+
   // ENROLL COURSE
-  const enrollCourse = async (
-    courseId
-  ) => {
+  const enrollCourse = async (courseId) => {
 
     try {
 
@@ -72,11 +74,8 @@ export default function Dashboard({ token }) {
         token
       );
 
-      alert(
-        "Enrolled successfully"
-      );
+      alert("Enrolled successfully");
 
-      // REFRESH COURSES
       loadCourses();
 
     } catch (err) {
@@ -89,12 +88,15 @@ export default function Dashboard({ token }) {
       );
 
     }
+
   };
 
-  // OPEN COURSE PAGE
+
+  // OPEN COURSE
   if (selectedCourse) {
 
     return (
+
       <Course
         courseId={selectedCourse}
         token={token}
@@ -102,10 +104,14 @@ export default function Dashboard({ token }) {
           setSelectedCourse(null)
         }
       />
+
     );
+
   }
 
+
   return (
+
     <div
       style={{
         display: "flex",
@@ -114,7 +120,9 @@ export default function Dashboard({ token }) {
       }}
     >
 
+
       {/* SIDEBAR */}
+
       <div
         style={{
           width: 250,
@@ -128,7 +136,9 @@ export default function Dashboard({ token }) {
 
         <div style={{ marginTop: 30 }}>
 
+
           {/* COURSES */}
+
           <div
             onClick={() =>
               setPage("courses")
@@ -140,7 +150,9 @@ export default function Dashboard({ token }) {
             📚 Courses
           </div>
 
+
           {/* CREATE COURSE */}
+
           {[
             "instructor",
             "admin"
@@ -148,9 +160,7 @@ export default function Dashboard({ token }) {
 
             <div
               onClick={() =>
-                setPage(
-                  "create-course"
-                )
+                setPage("create-course")
               }
               style={menuStyle(
                 page === "create-course"
@@ -160,38 +170,52 @@ export default function Dashboard({ token }) {
             </div>
 
           )}
+
+
+          {/* BROWSE COURSES */}
+
           {user?.role === "student" && (
 
-  <div
-    onClick={() =>
-      setPage("browse-courses")
-    }
-    style={menuStyle(
-      page === "browse-courses"
-    )}
-  >
-    🌍 Browse Courses
-  </div>
+            <div
+              onClick={() =>
+                setPage("browse-courses")
+              }
+              style={menuStyle(
+                page === "browse-courses"
+              )}
+            >
+              🌍 Browse Courses
+            </div>
 
-)}
+          )}
 
-{["admin", "instructor"].includes(user?.role) && (
 
-  <div
-    onClick={() => setPage("quiz-management")}
-    style={menuStyle(page === "quiz-management")}
-  >
-    📝 Quiz Management
-  </div>
+          {/* QUIZ MANAGEMENT */}
 
-)}
+          {[
+            "admin",
+            "instructor"
+          ].includes(user?.role) && (
+
+            <div
+              onClick={() =>
+                setPage("quiz-management")
+              }
+              style={menuStyle(
+                page === "quiz-management"
+              )}
+            >
+              📝 Quiz Management
+            </div>
+
+          )}
+
 
           {/* NOTIFICATIONS */}
+
           <div
             onClick={() =>
-              setPage(
-                "notifications"
-              )
+              setPage("notifications")
             }
             style={menuStyle(
               page === "notifications"
@@ -200,7 +224,9 @@ export default function Dashboard({ token }) {
             🔔 Notifications
           </div>
 
+
           {/* EXAMS */}
+
           <div
             onClick={() =>
               setPage("exams")
@@ -212,7 +238,9 @@ export default function Dashboard({ token }) {
             📝 Exams
           </div>
 
+
           {/* ANALYTICS */}
+
           <div
             onClick={() =>
               setPage("analytics")
@@ -224,61 +252,83 @@ export default function Dashboard({ token }) {
             📊 Analytics
           </div>
 
-          
-          {/* analytics dashboard */}
+
+          {/* ANALYTICS DASHBOARD */}
+
           <div
             onClick={() =>
-              setPage(
-                "AnalyticsDashboard"
-              )
+              setPage("AnalyticsDashboard")
             }
             style={menuStyle(
               page === "AnalyticsDashboard"
             )}
           >
-             analyticsdashboard
+            analyticsdashboard
           </div>
 
- {/* CERTIFICATES */}
 
-{user?.role === "student" && (
+          {/* STUDENT CERTIFICATES */}
 
-    <div
-        onClick={() => setPage("certificates")}
-        style={menuStyle(
-            page === "certificates"
-        )}
-    >
-        🏆 Certificates
-    </div>
+          {user?.role === "student" && (
 
-)}
+            <div
+              onClick={() =>
+                setPage("certificates")
+              }
+              style={menuStyle(
+                page === "certificates"
+              )}
+            >
+              🏆 Certificates
+            </div>
 
-{(user?.role === "instructor" ||
-  user?.role === "admin") && (
+          )}
 
-    <div
-        onClick={() => setPage("certificate-management")}
-        style={menuStyle(
-            page === "certificate-management"
-        )}
-    >
-        🏆 Certificate Management
-    </div>
 
-)}
+          {/* INSTRUCTOR / ADMIN CERTIFICATES */}
+
+          {[
+            "instructor",
+            "admin"
+          ].includes(user?.role) && (
+
+            <div
+              onClick={() =>
+                setPage(
+                  "certificate-management"
+                )
+              }
+              style={menuStyle(
+                page === "certificate-management"
+              )}
+            >
+              🏆 Certificate Management
+            </div>
+
+          )}
+
+
+          {/* LIBRARY */}
+
           <div
-  onClick={() => setPage("library")}
-  style={menuStyle(page === "library")}
->
-  📚 Library
-</div>
+            onClick={() =>
+              setPage("library")
+            }
+            style={menuStyle(
+              page === "library"
+            )}
+          >
+            📚 Library
+          </div>
+
 
         </div>
 
       </div>
 
+
       {/* MAIN CONTENT */}
+
       <div
         style={{
           flex: 1,
@@ -286,7 +336,9 @@ export default function Dashboard({ token }) {
         }}
       >
 
+
         {/* TOPBAR */}
+
         <div
           style={{
             background: "white",
@@ -294,13 +346,11 @@ export default function Dashboard({ token }) {
             borderRadius: 10,
             marginBottom: 30,
             display: "flex",
-            justifyContent:
-              "space-between",
+            justifyContent: "space-between",
             alignItems: "center"
           }}
         >
 
-          {/* USER INFO */}
           <div>
 
             <h2 style={{ margin: 0 }}>
@@ -312,8 +362,7 @@ export default function Dashboard({ token }) {
                 color: "gray"
               }}
             >
-              Welcome back,
-              {" "}
+              Welcome back{" "}
               {user?.name}
             </p>
 
@@ -329,18 +378,19 @@ export default function Dashboard({ token }) {
 
           </div>
 
-          {/* COURSE COUNT */}
+
           <div>
 
-            Total Courses:
-            {" "}
+            Total Courses:{" "}
             <strong>
               {courses.length}
             </strong>
 
           </div>
 
+
           {/* LOGOUT */}
+
           <button
             onClick={() => {
 
@@ -369,7 +419,9 @@ export default function Dashboard({ token }) {
 
         </div>
 
-        {/* CREATE COURSE PAGE */}
+
+        {/* CREATE COURSE */}
+
         {page === "create-course" && (
 
           <CreateCourse
@@ -378,7 +430,9 @@ export default function Dashboard({ token }) {
 
         )}
 
-        {/* COURSES PAGE */}
+
+        {/* COURSES */}
+
         {page === "courses" && (
 
           <div
@@ -401,23 +455,18 @@ export default function Dashboard({ token }) {
                     )
                   }
                   style={{
-                    background:
-                      "white",
+                    background: "white",
                     borderRadius: 12,
-                    overflow:
-                      "hidden",
-                    cursor:
-                      "pointer",
+                    overflow: "hidden",
+                    cursor: "pointer",
                     boxShadow:
                       "0 2px 8px rgba(0,0,0,0.1)"
                   }}
                 >
 
-                  {/* HEADER */}
                   <div
                     style={{
                       height: 80,
-
                       background:
                         index % 4 === 0
                           ? "#2563eb"
@@ -429,7 +478,6 @@ export default function Dashboard({ token }) {
                     }}
                   />
 
-                  {/* BODY */}
                   <div
                     style={{
                       padding: 20
@@ -442,22 +490,21 @@ export default function Dashboard({ token }) {
 
                     <p
                       style={{
-                        color:
-                          "gray"
+                        color: "gray"
                       }}
                     >
                       Open course
                       and assignments
                     </p>
 
+
                     {/* STUDENT */}
+
                     {user?.role ===
                     "student" ? (
 
                       <button
-                        onClick={(
-                          e
-                        ) => {
+                        onClick={(e) => {
 
                           e.stopPropagation();
 
@@ -469,21 +516,12 @@ export default function Dashboard({ token }) {
                         style={{
                           padding:
                             "8px 14px",
-
                           background:
                             "#2563eb",
-
-                          color:
-                            "white",
-
-                          border:
-                            "none",
-
-                          borderRadius:
-                            6,
-
-                          cursor:
-                            "pointer"
+                          color: "white",
+                          border: "none",
+                          borderRadius: 6,
+                          cursor: "pointer"
                         }}
                       >
                         Enroll
@@ -495,18 +533,11 @@ export default function Dashboard({ token }) {
                         style={{
                           padding:
                             "8px 14px",
-
                           background:
                             "#111827",
-
-                          color:
-                            "white",
-
-                          border:
-                            "none",
-
-                          borderRadius:
-                            6
+                          color: "white",
+                          border: "none",
+                          borderRadius: 6
                         }}
                       >
                         Open Course
@@ -524,19 +555,22 @@ export default function Dashboard({ token }) {
           </div>
 
         )}
-        
+
+
+        {/* BROWSE COURSES */}
+
         {page === "browse-courses" && (
 
-  <BrowseCourses
-    token={token}
-  />
+          <BrowseCourses
+            token={token}
+          />
 
-)}
+        )}
 
 
         {/* NOTIFICATIONS */}
-        {page ===
-          "notifications" && (
+
+        {page === "notifications" && (
 
           <Notifications
             token={token}
@@ -544,64 +578,95 @@ export default function Dashboard({ token }) {
 
         )}
 
+
+        {/* QUIZ MANAGEMENT */}
+
         {page === "quiz-management" && (
 
-  <QuizManagement
-    token={token}
-  />
+          <QuizManagement
+            token={token}
+          />
 
-)}
+        )}
+
 
         {/* EXAMS */}
+
         {page === "exams" && (
 
-          <Exams token={token} />
+          <Exams
+            token={token}
+          />
 
         )}
 
-       
+
+        {/* ANALYTICS */}
+
         {page === "analytics" && (
 
-   <Analytics
-      token={token}
-   />
+          <Analytics
+            token={token}
+          />
 
-)}
-{page === "certificate-management" && (
-    <CertificateManagement
-        courseId={courseId}
-        token={token}
-    />
-)}
-
-   {page === "certificates" && (
-    <>
-        {(user?.role === "instructor" || user?.role === "admin") && (
-            <CertificateStudents
-                courseId={courseId}
-                token={token}
-            />
         )}
 
-        {user?.role === "student" && (
-            <Certificates
-                token={token}
-            />
+
+        {/* ANALYTICS DASHBOARD */}
+
+        {page === "AnalyticsDashboard" && (
+
+          <AnalyticsDashboard
+            token={token}
+          />
+
         )}
-    </>
-)}
+
+
+        {/* INSTRUCTOR / ADMIN CERTIFICATE MANAGEMENT */}
+
+        {page === "certificate-management" && (
+
+          <CertificateManagement
+            token={token}
+          />
+
+        )}
+
+
+        {/* STUDENT CERTIFICATES ONLY */}
+
+        {page === "certificates" &&
+          user?.role === "student" && (
+
+          <Certificates
+            token={token}
+          />
+
+        )}
+
+
+        {/* LIBRARY */}
 
         {page === "library" && (
-  <Library token={token} />
-)}
+
+          <Library
+            token={token}
+          />
+
+        )}
 
       </div>
 
     </div>
+
   );
+
 }
 
+
 /* SIDEBAR MENU STYLE */
+
 function menuStyle(active) {
 
   return {
@@ -614,9 +679,11 @@ function menuStyle(active) {
 
     cursor: "pointer",
 
-    background: active
-      ? "#374151"
-      : "transparent"
+    background:
+      active
+        ? "#374151"
+        : "transparent"
 
   };
+
 }
