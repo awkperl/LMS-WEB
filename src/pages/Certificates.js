@@ -8,38 +8,35 @@ export default function Certificates({
   token
 }) {
 
-  const [certificates,
-    setCertificates] =
+  const [certificates, setCertificates] =
     useState([]);
 
-  // LOAD CERTIFICATES
+  // LOAD STUDENT CERTIFICATES
   useEffect(() => {
 
     loadCertificates();
 
-  }, []);
+  }, [token]);
 
-  const loadCertificates =
-  async ()=>{
+  const loadCertificates = async () => {
 
-    try{
+    try {
 
-      const data =
-      await api(
-        "/certificates",
+      const data = await api(
+        "/certificates/student",
         "GET",
         null,
         token
       );
 
       console.log(
-        "CERTIFICATES:",
+        "STUDENT CERTIFICATES:",
         data
       );
 
       setCertificates(data);
 
-    }catch(err){
+    } catch (err) {
 
       console.error(err);
 
@@ -48,35 +45,43 @@ export default function Certificates({
   };
 
   // PDF DOWNLOAD
-  const downloadPDF =
-  async(id)=>{
+  const downloadPDF = async (id) => {
 
     const input =
-    document.getElementById(
-      `certificate-${id}`
+      document.getElementById(
+        `certificate-${id}`
+      );
+
+    if (!input) {
+      console.error(
+        "Certificate element not found"
+      );
+      return;
+    }
+
+    const canvas = await html2canvas(
+      input,
+      {
+        scale: 2,
+        useCORS: true
+      }
     );
 
-    const canvas = await html2canvas(input,{
-   scale:2,
-   useCORS:true
-});
     const imgData =
-    canvas.toDataURL(
-      "image/png"
-    );
+      canvas.toDataURL("image/png");
 
     const pdf =
-    new jsPDF(
-      "landscape",
-      "px",
-      "a4"
-    );
+      new jsPDF(
+        "landscape",
+        "px",
+        "a4"
+      );
 
-    const width=
-    pdf.internal.pageSize.getWidth();
+    const width =
+      pdf.internal.pageSize.getWidth();
 
-    const height=
-    pdf.internal.pageSize.getHeight();
+    const height =
+      pdf.internal.pageSize.getHeight();
 
     pdf.addImage(
       imgData,
@@ -101,13 +106,13 @@ export default function Certificates({
 
       <div
         style={{
-          marginBottom:30
+          marginBottom: 30
         }}
       >
 
         <h1
           style={{
-            margin:0
+            margin: 0
           }}
         >
           Certifications
@@ -115,7 +120,7 @@ export default function Certificates({
 
         <p
           style={{
-            color:"gray"
+            color: "gray"
           }}
         >
           Download and manage
@@ -124,108 +129,110 @@ export default function Certificates({
 
       </div>
 
-      {
-      certificates.length===0
-      &&
-      <p>
-        No certificates available
-      </p>
-      }
 
-      {certificates.map(cert=>(
+      {/* NO CERTIFICATES */}
+
+      {certificates.length === 0 && (
+
+        <p>
+          No certificates available
+        </p>
+
+      )}
+
+
+      {/* CERTIFICATES */}
+
+      {certificates.map(cert => (
 
         <div
-          key={
-            cert.certificate_id
-          }
+          key={cert.certificate_id}
         >
 
           {/* CERTIFICATE */}
 
           <div
             id={`certificate-${cert.certificate_id}`}
-
             style={{
 
-              background:"white",
+              background: "white",
 
-              borderRadius:16,
+              borderRadius: 16,
 
-              padding:40,
+              padding: 40,
 
-              marginBottom:20,
+              marginBottom: 20,
 
               boxShadow:
-              "0 4px 12px rgba(0,0,0,0.08)",
+                "0 4px 12px rgba(0,0,0,0.08)",
 
               border:
-              "6px solid #111827",
+                "6px solid #111827",
 
-              position:"relative"
+              position: "relative"
 
             }}
           >
 
             {/* LOGO */}
 
-            <div
-           
-            >
+            <div>
+
               <img
-  src="/assets/logo.png"
-  alt="Institution Logo"
-  style={{
-    position: "absolute",
-    top: 30,
-    right: 40,
-    width: 100,
-    height: 100,
-    objectFit: "contain"
-  }}
-/>
+                src="/assets/logo.png"
+                alt="Institution Logo"
+                style={{
+                  position: "absolute",
+                  top: 30,
+                  right: 40,
+                  width: 100,
+                  height: 100,
+                  objectFit: "contain"
+                }}
+              />
 
               OLMS
 
             </div>
 
+
             {/* TITLE */}
 
             <div
               style={{
-                textAlign:"center",
-                marginBottom:30
+                textAlign: "center",
+                marginBottom: 30
               }}
             >
 
-             <h1
-  style={{
-    fontSize:38,
-    marginBottom:10,
-    color:"#111827"
-  }}
->
-Certificate of Completion
-</h1>
-
-<h3
-  style={{
-    color:"#2563eb",
-    marginBottom:20
-  }}
->
-Onet Learning Management System
-</h3>
-              <p
+              <h1
                 style={{
-                  color:"#6b7280",
-                  fontSize:18
+                  fontSize: 38,
+                  marginBottom: 10,
+                  color: "#111827"
                 }}
               >
+                Certificate of Completion
+              </h1>
 
+              <h3
+                style={{
+                  color: "#2563eb",
+                  marginBottom: 20
+                }}
+              >
+                Onet Learning Management System
+              </h3>
+
+              <p
+                style={{
+                  color: "#6b7280",
+                  fontSize: 18
+                }}
+              >
                 This certificate
                 is proudly
                 presented to
-
               </p>
 
             </div>
@@ -235,17 +242,13 @@ Onet Learning Management System
 
             <h2
               style={{
-                textAlign:"center",
-                fontSize:34,
-                marginBottom:10,
-                color:"#2563eb"
+                textAlign: "center",
+                fontSize: 34,
+                marginBottom: 10,
+                color: "#2563eb"
               }}
             >
-
-              {
-                cert.student_name
-              }
-
+              {cert.student_name}
             </h2>
 
 
@@ -254,18 +257,17 @@ Onet Learning Management System
             <p
               style={{
 
-                textAlign:"center",
+                textAlign: "center",
 
-                fontSize:18,
+                fontSize: 18,
 
-                lineHeight:1.8,
+                lineHeight: 1.8,
 
-                maxWidth:700,
+                maxWidth: 700,
 
-                margin:
-                "0 auto",
+                margin: "0 auto",
 
-                color:"#374151"
+                color: "#374151"
 
               }}
             >
@@ -276,38 +278,31 @@ Onet Learning Management System
               <strong>
 
                 {" "}
-                {
-                  cert.course_title
-                }
+                {cert.course_title}
 
               </strong>
 
               through the
               Onet Learning
-              Management System and 
+              Management System and
               Physical classes.
 
             </p>
 
 
-            {/* SCORE */}
+            {/* CERTIFICATE NUMBER */}
 
             <div
               style={{
-                textAlign:"center",
-                marginTop:20
+                textAlign: "center",
+                marginTop: 20
               }}
             >
 
               <h3>
-
-                Final Score:
+                Certificate Number:
                 {" "}
-                {
-                  cert.final_score
-                }
-                %
-
+                {cert.certificate_number}
               </h3>
 
             </div>
@@ -317,15 +312,18 @@ Onet Learning Management System
 
             <div
               style={{
-                display:"flex",
+
+                display: "flex",
+
                 justifyContent:
-                "space-between",
+                  "space-between",
 
-                marginTop:50,
+                marginTop: 50,
 
-                flexWrap:"wrap",
+                flexWrap: "wrap",
 
-                gap:20
+                gap: 20
+
               }}
             >
 
@@ -333,59 +331,53 @@ Onet Learning Management System
 
                 <p
                   style={{
-                    margin:0,
-                    color:"gray"
+                    margin: 0,
+                    color: "gray"
                   }}
                 >
-
                   Certificate ID
-
                 </p>
 
                 <strong>
-
-                  {
-                    cert.certificate_id
-                  }
-
+                  {cert.certificate_id}
                 </strong>
 
               </div>
+
+
+              {/* WATERMARK */}
+
               <img
-  src="/assets/logo.png"
-  alt=""
-  style={{
-    position:"absolute",
-    width:300,
-    opacity:0.05,
-    top:"50%",
-    left:"50%",
-    transform:"translate(-50%,-50%)"
-  }}
-/>
+                src="/assets/logo.png"
+                alt=""
+                style={{
+                  position: "absolute",
+                  width: 300,
+                  opacity: 0.05,
+                  top: "50%",
+                  left: "50%",
+                  transform:
+                    "translate(-50%,-50%)"
+                }}
+              />
 
 
               <div>
 
                 <p
                   style={{
-                    margin:0,
-                    color:"gray"
+                    margin: 0,
+                    color: "gray"
                   }}
                 >
-
-                  Completion Date
-
+                  Issue Date
                 </p>
 
                 <strong>
 
-                  {
-                    new Date(
-                    cert.completion_date
-                    )
-                    .toLocaleDateString()
-                  }
+                  {new Date(
+                    cert.issued_at
+                  ).toLocaleDateString()}
 
                 </strong>
 
@@ -399,14 +391,14 @@ Onet Learning Management System
             <div
               style={{
 
-                marginTop:70,
+                marginTop: 70,
 
-                display:"flex",
+                display: "flex",
 
                 justifyContent:
-                "space-between",
+                  "space-between",
 
-                alignItems:"center"
+                alignItems: "center"
 
               }}
             >
@@ -415,10 +407,10 @@ Onet Learning Management System
 
                 <div
                   style={{
-                    width:220,
+                    width: 220,
                     borderBottom:
-                    "2px solid #111827",
-                    marginBottom:8
+                      "2px solid #111827",
+                    marginBottom: 8
                   }}
                 />
 
@@ -431,14 +423,12 @@ Onet Learning Management System
 
               <div
                 style={{
-                  fontSize:50,
-                  opacity:.1,
-                  fontWeight:"bold"
+                  fontSize: 50,
+                  opacity: 0.1,
+                  fontWeight: "bold"
                 }}
               >
-
                 OLMS
-
               </div>
 
             </div>
@@ -446,45 +436,39 @@ Onet Learning Management System
           </div>
 
 
-
           {/* DOWNLOAD */}
 
           <div
             style={{
-              textAlign:"center",
-              marginBottom:40
+              textAlign: "center",
+              marginBottom: 40
             }}
           >
 
             <button
-
-              onClick={()=>
+              onClick={() =>
                 downloadPDF(
                   cert.certificate_id
                 )
               }
-
               style={{
 
                 padding:
-                "12px 24px",
+                  "12px 24px",
 
-                border:"none",
+                border: "none",
 
-                borderRadius:8,
+                borderRadius: 8,
 
-                background:"#111827",
+                background: "#111827",
 
-                color:"white",
+                color: "white",
 
-                cursor:"pointer"
+                cursor: "pointer"
 
               }}
-
             >
-
               Download PDF
-
             </button>
 
           </div>
