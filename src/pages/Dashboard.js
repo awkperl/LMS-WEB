@@ -625,13 +625,15 @@ export default function Dashboard({ token }) {
 
         {/* INSTRUCTOR / ADMIN CERTIFICATE MANAGEMENT */}
 
+     
         {page === "certificate-management" && (
 
-          <CertificateManagement
-            token={token}
-          />
+  <CertificateManagement
+    courses={courses}
+    token={token}
+  />
 
-        )}
+)}
 
 
         {/* STUDENT CERTIFICATES ONLY */}
